@@ -1,5 +1,5 @@
 const db = require("../models");
-const { Menu, FoodType } = db;
+const { Menu } = db;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Menu

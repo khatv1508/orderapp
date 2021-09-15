@@ -4,9 +4,9 @@ const Sequelize = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,
     dialect: dbConfig.dialect,
-    username: dbConfig.USER,
-    password: dbConfig.PASSWORD,
-    database: dbConfig.DB,
+    // username: dbConfig.USER,
+    // password: dbConfig.PASSWORD,
+    // database: dbConfig.DB,
     operatorsAliases: 0,
     pool: {
       max: dbConfig.pool.max,
