@@ -1,15 +1,13 @@
 module.exports = (sequelize, Sequelize) => {
-  const Model = Sequelize.Model;
-
-  class Menu extends Model {}
+  class Menu extends Sequelize.Model {}
   Menu.init({
     id: {
       type: Sequelize.INTEGER,
-      primaryKey: true
+      primaryKey: true,
     },
-    type_id: {
-      type: Sequelize.INTEGER
-    },
+    // type_id: {
+    //   type: Sequelize.INTEGER
+    // },
     food_name: {
       type: Sequelize.STRING
     },
@@ -19,6 +17,6 @@ module.exports = (sequelize, Sequelize) => {
     image: {
       type: Sequelize.STRING
     }
-  }, { sequelize, modelName: 'menus', timestamps: false });
+  }, { sequelize, modelName: 'menus', timestamps: false, underscored: true});
   return Menu;
 };

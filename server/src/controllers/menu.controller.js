@@ -1,5 +1,5 @@
 const db = require("../models");
-const Menu = db.orderapp;
+const { Menu, FoodType } = db;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Menu
@@ -52,7 +52,10 @@ exports.findAll = (req, res) => {
     ? { food_name: { [Op.like]: `%${food_name}%` } } 
     : null;
 
-    Menu.findAll({ where: condition })
+    Menu.findAll({ 
+      where: condition, 
+      include: ["type"]
+    })
     .then(data => {
       res.send(data);
     })
