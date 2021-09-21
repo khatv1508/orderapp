@@ -5,9 +5,6 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
       primaryKey: true,
     },
-    // type_id: {
-    //   type: Sequelize.INTEGER
-    // },
     food_name: {
       type: Sequelize.STRING
     },

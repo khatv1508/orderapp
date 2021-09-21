@@ -16,18 +16,27 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = require("./src/models");
-db.sequelize.sync();
+// db.sequelize.sync();
 
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
 
+// account route
+require("./src/routes/account.route")(app);
+
 // menu route
 require("./src/routes/menu.route")(app);
 
-// account route
-require("./src/routes/accounts.route")(app);
+// table route
+require("./src/routes/table.route")(app);
+
+// bill route
+require("./src/routes/bill.route")(app);
+
+// turn route
+require("./src/routes/turn.route")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;

@@ -77,7 +77,7 @@ exports.findOne = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving Tutorial with id=" + id
+        message: `Error retrieving Menu with id=${id}`
       });
     });
 };
@@ -102,7 +102,7 @@ exports.update = (req, res) => {
   })
   .catch(err => {
     res.status(500).send({
-      message: "Error updating Menu with id=" + id
+      message: `Could not delete Menu with id=${id}`
     });
   });
 };
@@ -143,7 +143,7 @@ exports.findAllByType = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving menus."
+          err.message || "Some error occurred while retrieving Menu."
       });
     });
 };
