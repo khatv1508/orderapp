@@ -1,0 +1,40 @@
+.container {
+  background: #ffdec4;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  /* overflow: hidden; */
+}
+
+.main-home {
+  height: 100vh;
+  width: 95%;
+  margin: 40px 0;
+  border-radius: 30px !important;
+  display: flex;
+  flex-direction: row;
+}
+
+.blur-bg {
+  width: 100%;
+  position: relative;
+  
+}
+
+.background {
+  opacity: 0.5;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background: white;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.foreground {
+  height: 100%;
+  position: relative;
+}

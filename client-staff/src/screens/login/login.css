@@ -1,0 +1,66 @@
+.main {
+    /* background-color: #EFEFEF; */
+    background-image: url("../../assets/image/bg.jpg");
+    background-position: center center;
+    background-size: cover;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.form-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 100vh;
+}
+
+.form-login {
+    width: 450px;
+    height: calc(90vh - 60px);
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+}
+
+.form-login .logo {
+    width: 250px;
+    margin: 0 0 40px 0;
+}
+
+.form-login .line {
+    width: 40%;
+    margin: 10px;
+}
+
+.form-login h1 {
+    font-size: 40px;
+    margin: 30px 0;
+}
+
+.form-login .form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-login .form .account {
+    background-color: #F6F5FD;
+    width: 350px;
+    margin-bottom: 25px;
+}
+
+.form-login .form .password {
+    background-color: #F6F5FD;
+    width: 350px;
+    margin-bottom: 25px;
+}
+
+.form-login .form .btn-login {
+    padding: 12px 55px;
+    font-size: 16px;
+    border-radius: 25px;
+    background: tomato;
+}

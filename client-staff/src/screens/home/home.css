@@ -1,0 +1,42 @@
+.list-table {
+    background: bisque;
+}
+
+.title{
+    margin: 10px 0 0 0;
+}
+
+.table {
+    padding-top: 0 !important;
+    width: 100%;
+}
+
+.table-item {
+    margin-bottom: 20px !important;
+    padding-top: 0 !important;
+}
+
+.avatar-table {
+    height: 50px !important;
+    width: 50px !important;
+    background-color:#FFEEE1;
+    margin: 15px;
+}
+
+.step-table {
+    align-content: "flex-start";
+    max-height: 780px;
+    height: fit-content;
+    overflow: auto;
+    margin-top: 10px !important;
+    padding-top: 0 !important;
+}
+
+.new-order {
+    padding-left: 25px !important;
+    max-height: 780px;
+    height: fit-content;
+    overflow: auto;
+    margin-top: 10px !important;
+    padding-top: 0 !important;
+}

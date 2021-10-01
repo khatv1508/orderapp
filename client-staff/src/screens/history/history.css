@@ -1,0 +1,8 @@
+.history-order {
+    display: flex;
+    padding: 0 25px;
+    max-height: 750px;
+    height: fit-content;
+    overflow: auto;
+    margin-top: 10px !important;
+}

@@ -1,0 +1,17 @@
+.order-item {
+    margin-bottom: 30px;
+}
+
+.item-center {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.avatar-staff {
+    height: 50px !important;
+    width: 50px !important;
+    background-color:#FFEEE1;
+    margin: 15px;
+}
