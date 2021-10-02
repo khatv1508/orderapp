@@ -31,7 +31,7 @@ function DeleteAccount() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Do you want to delete "" account?
+            Do you want to delete "{account && account.name}" account?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

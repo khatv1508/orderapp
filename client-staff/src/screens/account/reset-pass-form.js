@@ -22,7 +22,7 @@ function ResetForm() {
     return (
         <div>
             <Dialog open={Boolean(reset_form)} onClose={handleClose}>
-                <DialogTitle>Reset Password for ""</DialogTitle>
+                <DialogTitle>Reset Password for "{account && account.name}"</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
