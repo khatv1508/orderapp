@@ -11,6 +11,7 @@ import History from './screens/history/history';
 import Account from './screens/account/account';
 import MenuManagement from './screens/menu/menu';
 import Table from './screens/table/table';
+import SnackBar from "./components/snack-bar/snack-bar";
 
 function App() {
   let match = useRouteMatch();
@@ -19,6 +20,7 @@ function App() {
     <div className="container">
       <div className="main-home" >
         <Menu />
+        <SnackBar />
         <div className="blur-bg">
           <div className="background"></div>
           <div className="foreground">

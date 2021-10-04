@@ -31,7 +31,7 @@ function DeleteMenu() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Do you want to delete "{menu.name}" account?
+            Do you want to delete "{menu.name}"?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

@@ -7,18 +7,45 @@ import {
     TableHead, 
     TableRow, 
     Paper,
-    IconButton
+    IconButton,
+    Button
 }from '@mui/material';
 import AddTable from "./add-table";
+import DeleteTable from "./delete-table";
 import { MdDelete} from "react-icons/md";
+import { useDispatch } from 'react-redux';
+import { tableFormSlice} from "../../store/slices/table-form";
+import RefreshBtn from "../../components/refresh-btn/refresh";
+import { RiMenuAddFill } from "react-icons/ri";
 
 
 function TableManagement() {
+
+  const dispatch = useDispatch();
+
+  const addHandleClick = () => {
+    dispatch(tableFormSlice.actions.setAddTable(1));
+  }
+
+  const deleteHandleClick = () => {
+    dispatch(tableFormSlice.actions.setDeleteTable(1));
+    // dispatch(tableFormSlice.actions.setTable(table));
+  }
+
   return (
     <div>
+      {/* form dialog */}
+      <AddTable />
+      <DeleteTable />
       <div className="table-top">
         <h2>Table</h2>
-        <AddTable />
+        <div>
+          <Button variant="outlined" onClick={addHandleClick} 
+            startIcon={<RiMenuAddFill style={{width: "23px", height: "23px"}}/>}>
+            <span style={{fontSize: "18px"}}>Add</span>
+          </Button>
+          <RefreshBtn />
+        </div>
       </div>
         
       <div style={{padding: "0 20px"}}>
@@ -36,7 +63,7 @@ function TableManagement() {
                     <TableCell align="center">1</TableCell>
                     <TableCell align="center">1</TableCell>
                     <TableCell align="center">
-                      <IconButton><MdDelete /></IconButton>
+                      <IconButton onClick={deleteHandleClick}><MdDelete /></IconButton>
                     </TableCell>
                   </TableRow>
               </TableBody>

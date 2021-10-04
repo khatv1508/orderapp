@@ -16,7 +16,7 @@ function DeleteAccount() {
 
     const handleClose = () => {
         dispatch(accountFormSlice.actions.setDeleteAccount(0));
-        dispatch(accountFormSlice.actions.setAccount({}));
+        dispatch(accountFormSlice.actions.setAccount(undefined));
     };
 
   return (

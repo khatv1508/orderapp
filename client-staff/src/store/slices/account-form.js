@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const accountFormSlice = createSlice({
     name: 'account-form',
     initialState: {
-        account: {},
+        account: undefined,
         add_form: {
           open: 0,
           type: "add",

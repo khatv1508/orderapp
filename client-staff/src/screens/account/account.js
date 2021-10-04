@@ -16,8 +16,8 @@ import RefreshBtn from "../../components/refresh-btn/refresh";
 import { IoMdPersonAdd } from "react-icons/io";
 import { BiEdit } from "react-icons/bi";
 import { MdDelete, MdVpnKey } from "react-icons/md";
-import AddForm from "./add-account";
-import ResetForm from "./reset-pass-form";
+import AddAccount from "./add-account";
+import ResetPass from "./reset-pass-form";
 import DeleteAccount from "./delete-account";
 import { useDispatch } from 'react-redux';
 import { accountFormSlice } from "../../store/slices/account-form";
@@ -70,8 +70,8 @@ function Account() {
   return (
     <div>
       {/* form dialog */}
-      <AddForm />
-      <ResetForm />
+      <AddAccount />
+      <ResetPass />
       <DeleteAccount />
 
       <div className="account-top">

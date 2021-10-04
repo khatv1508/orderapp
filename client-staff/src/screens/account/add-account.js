@@ -20,6 +20,8 @@ import { accountFormSlice } from "../../store/slices/account-form";
 import { Form, Field } from 'react-final-form';
 import generator from 'generate-password';
 import { BiCopy } from 'react-icons/bi';
+import { snackBarSlice } from "../../store/slices/snack-bar";
+import { copyToClipboard } from "../../common/copyToClipBoard";
 
 function AddForm() {
     const {add_form, account} = useSelector((state) => state.accountForm);
@@ -30,14 +32,29 @@ function AddForm() {
         dispatch(accountFormSlice.actions.setAccount(undefined));
     };
 
-    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    // const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
     const onSubmit = async (values) => {
-        await sleep(300);
-        window.alert(JSON.stringify(values, 0, 2));
+        // await sleep(300);
+        // window.alert(JSON.stringify(values, 0, 2));
 
         // TODO: Call API
+        dispatch(snackBarSlice.actions.setOpen(1));
+        dispatch(snackBarSlice.actions.setContent({severity: "success", message: "error"}));
+
+        handleClose();
     };
+
+    const handleCopyToClipBoard = () => {
+        copyToClipboard(pass);
+        dispatch(snackBarSlice.actions.setOpen(1));
+        dispatch(snackBarSlice.actions.setContent({severity: "success", message: "Coppied!"}));
+    }
+
+    const pass = generator.generate({
+        length: 10,
+        numbers: true
+    });
 
     const formData = account ? {
         id: account.id,
@@ -46,10 +63,7 @@ function AddForm() {
         status: account.status
     } : {
         id: undefined,
-        password: generator.generate({
-            length: 10,
-            numbers: true
-        }),
+        password: pass,
         role: 0,
         status: 1,
     };
@@ -79,7 +93,7 @@ function AddForm() {
                                         </div>
                                     )}
                                 </Field>
-                                {!Boolean(account) && <Field name="password">
+                                {!account && <Field name="password">
                                     {props => (
                                         <div>
                                             <FormControl fullWidth margin="normal">
@@ -92,7 +106,7 @@ function AddForm() {
                                                         onChange={props.input.onChange}
                                                         fullWidth
                                                     />
-                                                    <IconButton style={{width: '55px'}}><BiCopy /></IconButton>
+                                                    <IconButton style={{width: '55px'}} onClick={handleCopyToClipBoard}><BiCopy /></IconButton>
                                                 </Stack>
                                             </FormControl>
                                         </div>

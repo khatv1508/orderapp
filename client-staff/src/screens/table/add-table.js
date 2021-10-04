@@ -7,41 +7,39 @@ import {
     DialogContent,
     DialogTitle
 }from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { tableFormSlice} from "../../store/slices/table-form";
 
-export default function FormDialog() {
-  const [open, setOpen] = React.useState(false);
+function AddTable() {
+  const {add_table} = useSelector((state) => state.tableForm);
+    const dispatch = useDispatch();
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+    const handleClose = () => {
+        dispatch(tableFormSlice.actions.setAddTable(0));
+    };
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open form dialog
-      </Button>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Subscribe</DialogTitle>
+      <Dialog open={Boolean(add_table)} onClose={handleClose}>
+        <DialogTitle>Add Table</DialogTitle>
         <DialogContent>
           <TextField
-            autoFocus
             margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
+            id="table"
+            label="Table Number"
+            type="integer"
             fullWidth
-            variant="standard"
+            variant="outlined"
           />
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleClose}>Apply</Button>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
         </DialogActions>
       </Dialog>
     </div>
   );
 }
+
+export default AddTable;
