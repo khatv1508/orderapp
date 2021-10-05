@@ -11,13 +11,14 @@ import {
     Button
 }from '@mui/material';
 import RefreshBtn from "../../components/refresh-btn/refresh";
-import { RiMenuAddFill } from "react-icons/ri";
+import { RiMenuAddFill, RiImageAddFill } from "react-icons/ri";
 import { BiEdit } from "react-icons/bi";
 import { MdDelete} from "react-icons/md";
 import { useDispatch } from 'react-redux';
 import { menuFormSlice } from "../../store/slices/menu-form";
 import AddMenu from "./add-menu";
 import DeleteMenu from "./delete-menu";
+import ImageMenu from "./image-menu";
 
 const menus = [{
   id: 1,
@@ -65,11 +66,16 @@ function Menu() {
     dispatch(menuFormSlice.actions.setMenu(menu));
   }
 
+  const UploadHandleClick = () => {
+    dispatch(menuFormSlice.actions.setImageMenu(1));
+  }
+
   return (
     <div>
       {/* form dialog */}
       <AddMenu />
       <DeleteMenu />
+      <ImageMenu />
       <div className="meun-top" style={{}}>
         <h2>Menu</h2>
         <div>
@@ -104,6 +110,7 @@ function Menu() {
                   <TableCell align="center">{menu.price}</TableCell>
                   <TableCell align="center">{menu.imageUrl}</TableCell>
                   <TableCell align="center">
+                    <IconButton onClick={UploadHandleClick}><RiImageAddFill /></IconButton>
                     <IconButton onClick={() => editHandleClick(menu)}><BiEdit /></IconButton>
                     <IconButton onClick={() => deleteHandleClick(menu)}><MdDelete /></IconButton>
                   </TableCell>

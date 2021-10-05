@@ -3,32 +3,54 @@ import {
     Button, 
     TextField,
     Dialog,
-    DialogActions,
     DialogContent,
     DialogTitle,
-    InputLabel,
     Select,
     MenuItem,
-    FormControl
+    FormControl,
+    FormLabel,
+    Stack
 }from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { menuFormSlice } from "../../store/slices/menu-form";
+import { snackBarSlice } from "../../store/slices/snack-bar";
+import { Form, Field } from 'react-final-form';
 
 function AddMenu() {
     const {add_menu, menu} = useSelector((state) => state.menuForm);
     const dispatch = useDispatch();
 
-    const [selectValue, setSelectValue] = React.useState(menu ? menu.type_id : 0);
+    // const [selectValue, setSelectValue] = React.useState();
 
     const handleClose = () => {
         dispatch(menuFormSlice.actions.setAddMenu({open: 0, type: ""}));
-        dispatch(menuFormSlice.actions.setMenu({}));
-        console.log(selectValue);    
+        dispatch(menuFormSlice.actions.setMenu(undefined));
+        // console.log(selectValue);    
     };
 
-    const handleChange = (event) => {
-        console.log(event.target.value);
-        setSelectValue(event.target.value);
+    const onSubmit = async (values) => {
+        // await sleep(300);
+        window.alert(JSON.stringify(menu));
+
+        // TODO: Call API
+        dispatch(snackBarSlice.actions.setOpen(1));
+        dispatch(snackBarSlice.actions.setContent({severity: "success", message: "Success!"}));
+
+        handleClose();
+    };
+
+    const formData = menu ? {
+        id: menu.id,
+        name: menu.name,
+        price: menu.price,
+        image: menu.image,
+        type_id: menu.type_id
+    } : {
+        id: undefined,
+        name: undefined,
+        price: undefined,
+        image: "",
+        type_id: 0,
     };
 
     return (
@@ -36,55 +58,90 @@ function AddMenu() {
             <Dialog open={Boolean(add_menu.open)} onClose={handleClose}>
                 <DialogTitle>{add_menu.type === "add" ? "Add" : "Edit"} Menu</DialogTitle>
                 <DialogContent>
-                    <TextField style={{margin: "15px 0"}}
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Name"
-                        type="string"
-                        fullWidth
-                        variant="outlined"
-                        value={menu ? menu.name : ""}
-                    />
-                    <TextField style={{margin: "15px 0"}}
-                        margin="dense"
-                        id="price"
-                        label="Price"
-                        type="double"
-                        fullWidth
-                        variant="outlined"
-                        value={menu ? menu.price : ""}
-                    />
-                    <TextField style={{margin: "15px 0"}}
-                        margin="dense"
-                        id="iamge"
-                        label="Image"
-                        type="string"
-                        fullWidth
-                        variant="outlined"
-                        value={menu ? menu.imageUrl : ""}
-                    />
-                    <FormControl fullWidth style={{margin: "15px 0"}}>
-                        <InputLabel id="type-label">Type</InputLabel>
-                        <Select
-                            id="type"
-                            value={0}
-                            label="Type"
-                            onChange={handleChange}
-                        >
-                            <MenuItem value={0}>Please select...</MenuItem>
-                            <MenuItem value={1}>Món ăn</MenuItem>
-                            <MenuItem value={2}>Đồ uống</MenuItem>
-                        </Select>
-                    </FormControl>
+                <Form
+                    onSubmit={onSubmit}
+                    initialValues={{ ...formData }}
+                    render={({ handleSubmit, form, submitting, pristine, values }) => (
+                        <form onSubmit={handleSubmit} style={{minWidth: '300px'}}>
+                            <Field name="name">
+                                {props => (
+                                    <div>
+                                        <FormControl fullWidth margin="normal">
+                                            <FormLabel component="legend">Name</FormLabel>
+                                            <TextField
+                                                name={props.input.name}
+                                                value={props.input.value}
+                                                onChange={props.input.onChange}
+                                                fullWidth
+                                            />
+                                        </FormControl>
+                                    </div>
+                                )}
+                            </Field>
+                            <Field name="price">
+                                {props => (
+                                    <div>
+                                        <FormControl fullWidth margin="normal">
+                                            <FormLabel component="legend">Price</FormLabel>
+                                            <TextField
+                                                name={props.input.name}
+                                                value={props.input.value}
+                                                onChange={props.input.onChange}
+                                                fullWidth
+                                            />
+                                        </FormControl>
+                                    </div>
+                                )}
+                            </Field>
+                            <Field name="image">
+                                {props => (
+                                    <div>
+                                        <FormControl fullWidth margin="normal">
+                                            <FormLabel component="legend">Image</FormLabel>
+                                            <Stack spacing={1} direction="row" justifyContent="flex-end"> 
+                                                <TextField
+                                                    name={props.input.name}
+                                                    value={props.input.value}
+                                                    onChange={props.input.onChange}
+                                                    fullWidth
+                                                />
+                                            </Stack>
+                                        </FormControl>
+                                    </div>
+                                )}
+                            </Field>
+                            <Field name="type_id">
+                                {props => (
+                                    <div>
+                                        <FormControl fullWidth margin="normal">
+                                            <FormLabel component="legend">Type</FormLabel>
+                                            <Select id="role"
+                                                name={props.input.name}
+                                                value={props.input.value}
+                                                onChange={props.input.onChange}
+                                            >
+                                                <MenuItem value={0}>Please select...</MenuItem>
+                                                <MenuItem value={1}>Đồ ăn </MenuItem>
+                                                <MenuItem value={2}>Nước uống</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </div>
+                                )}
+                            </Field>
+
+                            <pre>{JSON.stringify(values, 0, 2)}</pre>
+
+                            <Stack spacing={2} direction="row" justifyContent="flex-end" sx={{ p: 1 }}> 
+                                <Button variant="outlined" type="submit" disabled={submitting} >Apply</Button>
+                                <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+                            </Stack>
+                        </form>
+                    )}
+                />
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Apply</Button>
-                    <Button onClick={handleClose}>Cancel</Button>
-                </DialogActions>
             </Dialog>
         </div>
-  );
+    );
 }
 
 export default AddMenu;

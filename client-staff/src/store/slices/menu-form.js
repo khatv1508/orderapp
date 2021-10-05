@@ -3,12 +3,13 @@ import { createSlice } from '@reduxjs/toolkit';
 export const menuFormSlice = createSlice({
     name: 'account-form',
     initialState: {
-        menu: {},
+        menu: undefined,
         add_menu: {
           open: 0,
           type: "add",
         },
-        delete_menu: 0
+        delete_menu: 0,
+        image_menu: 0
     },
     reducers: {
         setMenu: (state, action) => {
@@ -27,6 +28,12 @@ export const menuFormSlice = createSlice({
             return {
                 ...state,
                 delete_menu: action.payload
+            }
+        },
+        setImageMenu: (state, action) => {
+            return {
+                ...state,
+                image_menu: action.payload
             }
         }
     }

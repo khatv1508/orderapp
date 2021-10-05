@@ -9,6 +9,7 @@ import {
 }from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { menuFormSlice } from "../../store/slices/menu-form";
+import { snackBarSlice } from "../../store/slices/snack-bar";
 
 function DeleteMenu() {
     const {delete_menu, menu} = useSelector((state) => state.menuForm);
@@ -16,8 +17,15 @@ function DeleteMenu() {
 
     const handleClose = () => {
         dispatch(menuFormSlice.actions.setDeleteMenu(0));
-        dispatch(menuFormSlice.actions.setMenu({}));
+        dispatch(menuFormSlice.actions.setMenu(undefined));
     };
+
+    const handleApply = () => {
+      dispatch(snackBarSlice.actions.setOpen(1));
+      dispatch(snackBarSlice.actions.setContent({severity: "success", message: "Delete complete!"}));
+
+      handleClose();
+  };
 
   return (
     <div>
@@ -31,11 +39,11 @@ function DeleteMenu() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Do you want to delete "{menu.name}"?
+            Do you want to delete "{menu && menu.name}" ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Apply</Button>
+          <Button onClick={handleApply}>Apply</Button>
           <Button onClick={handleClose}>Cancel</Button>
         </DialogActions>
       </Dialog>

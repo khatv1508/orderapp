@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const tableFormSlice = createSlice({
     name: 'table-form',
     initialState: {
-        table: {},
+        table: undefined,
         add_table: 0,
         delete_table: 0
     },

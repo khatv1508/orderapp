@@ -40,7 +40,7 @@ function AddForm() {
 
         // TODO: Call API
         dispatch(snackBarSlice.actions.setOpen(1));
-        dispatch(snackBarSlice.actions.setContent({severity: "success", message: "error"}));
+        dispatch(snackBarSlice.actions.setContent({severity: "success", message: "Success!"}));
 
         handleClose();
     };
