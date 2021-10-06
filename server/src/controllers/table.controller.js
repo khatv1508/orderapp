@@ -2,7 +2,7 @@ const db = require("../models");
 const { Table } = db;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new Menu
+// Create and Save a new Table
 exports.create = (req, res) => {
   // Validate request
   if (!req.body.table_number) {
@@ -12,12 +12,12 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create a Account
+  // Create a Table
   const table = {
     table_number: req.body.table_number
   };
 
-  // Save Account in the database
+  // Save Table in the database
   Table.create(table)
     .then(data => {
       res.send(data);
@@ -30,7 +30,7 @@ exports.create = (req, res) => {
     });
 };
 
-// Retrieve all Account from the database.
+// Retrieve all Table from the database.
 exports.findAll = (req, res) => {
     const table_number = req.query.table_number;
     var condition = table_number 
@@ -51,12 +51,12 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Delete a Account with the specified id in the request
+// Delete a Table with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
 
   Table.destroy({
-    where: { id: id }
+    where: { table_id: id }
   })
     .then(num => {
       if (num == 1) {

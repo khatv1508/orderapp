@@ -13,32 +13,22 @@ import {
 import AddTable from "./add-table";
 import DeleteTable from "./delete-table";
 import { MdDelete} from "react-icons/md";
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { tableFormSlice} from "../../store/slices/table-form";
 import RefreshBtn from "../../components/refresh-btn/refresh";
 import { SiAirtable } from "react-icons/si";
-
-const tables = [{
-  id: 1,
-  number: 1
-},
-{
-  id: 2,
-  number: 2
-},
-{
-  id: 3,
-  number: 3
-},
-{
-  id: 4,
-  number: 4
-}
-];
+import { fetchAllTable } from "../../store/thunk/thunk-table";
+import React from "react";
 
 function TableManagement() {
-
+  const {list_table} = useSelector((state) => state.tableForm);
   const dispatch = useDispatch();
+
+  const [tables, setTables] = React.useState(list_table);
+
+  React.useEffect(() => {
+    setTables(list_table);
+  }, [list_table]);
 
   const addHandleClick = (table) => {
     dispatch(tableFormSlice.actions.setAddTable(1));
@@ -48,6 +38,10 @@ function TableManagement() {
   const deleteHandleClick = (table) => {
     dispatch(tableFormSlice.actions.setDeleteTable(1));
     dispatch(tableFormSlice.actions.setTable(table));
+  }
+
+  const onFetchAllTable = () => {
+    dispatch(fetchAllTable());
   }
 
   return (
@@ -62,7 +56,7 @@ function TableManagement() {
             startIcon={<SiAirtable style={{width: "23px", height: "23px"}}/>}>
             <span style={{fontSize: "18px"}}>Add</span>
           </Button>
-          <RefreshBtn />
+          <RefreshBtn onHandleClick={onFetchAllTable}/>
         </div>
       </div>
         
@@ -77,11 +71,11 @@ function TableManagement() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tables.map((table, index) => {
+                {tables && tables.map((table, index) => {
                   return (
                     <TableRow key={index}>
-                      <TableCell align="center">{table.id}</TableCell>
-                      <TableCell align="center">{table.number}</TableCell>
+                      <TableCell align="center">{table.table_id}</TableCell>
+                      <TableCell align="center">{table.table_number}</TableCell>
                       <TableCell align="center">
                         <IconButton onClick={() => deleteHandleClick(table)}><MdDelete /></IconButton>
                       </TableCell>
@@ -92,7 +86,6 @@ function TableManagement() {
             </Table>
           </TableContainer>
       </div>
-      
     </div>
   );    
 }

@@ -9,7 +9,7 @@ import {
 }from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { tableFormSlice } from "../../store/slices/table-form";
-import { snackBarSlice } from "../../store/slices/snack-bar";
+import { fetchDeleteTable, fetchAllTable } from "../../store/thunk/thunk-table";
 
 function DeleteMenu() {
   const {delete_table, table} = useSelector((state) => state.tableForm);
@@ -21,12 +21,9 @@ function DeleteMenu() {
   };
 
   const handleApply = () => {
-    window.alert(JSON.stringify(table));
-    // TODO: Call API
-    dispatch(snackBarSlice.actions.setOpen(1));
-    dispatch(snackBarSlice.actions.setContent({severity: "success", message: "Delete complete!"}));
-
+    dispatch(fetchDeleteTable(table.table_id));
     handleClose();
+    dispatch(fetchAllTable());
   };
   return (
     <div>
@@ -40,7 +37,7 @@ function DeleteMenu() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Do you want to delete Table "{table && table.number}" ?
+            Do you want to delete Table "{table && table.table_number}" ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

@@ -12,9 +12,20 @@ import Account from './screens/account/account';
 import MenuManagement from './screens/menu/menu';
 import Table from './screens/table/table';
 import SnackBar from "./components/snack-bar/snack-bar";
+import { fetchAllTable } from "./store/thunk/thunk-table";
+import { useDispatch } from 'react-redux';
+import React from "react";
+
 
 function App() {
   let match = useRouteMatch();
+  const dispatch = useDispatch();
+
+  // load data 
+  React.useEffect(() => {
+    dispatch(fetchAllTable());
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <div className="container">

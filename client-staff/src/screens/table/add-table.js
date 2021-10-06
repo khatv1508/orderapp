@@ -12,12 +12,11 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { tableFormSlice} from "../../store/slices/table-form";
 import {Form, Field} from 'react-final-form';
-import { snackBarSlice } from "../../store/slices/snack-bar";
+import { fetchAddTable, fetchAllTable } from "../../store/thunk/thunk-table";
 
 function AddTable() {
   const {add_table} = useSelector((state) => state.tableForm);
   const dispatch = useDispatch();
-
 
   const handleClose = () => {
     dispatch(tableFormSlice.actions.setAddTable(0));
@@ -25,10 +24,9 @@ function AddTable() {
   };
 
   const onSubmit = async (values) => {
-    dispatch(snackBarSlice.actions.setOpen(1));
-    dispatch(snackBarSlice.actions.setContent({severity: "success", message: "Success!"}));
-
+    values.number && dispatch(fetchAddTable(values.number));
     handleClose();
+    dispatch(fetchAllTable());
   }
 
   const formData = {
