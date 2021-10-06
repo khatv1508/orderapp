@@ -93,23 +93,6 @@ function AddMenu() {
                                     </div>
                                 )}
                             </Field>
-                            <Field name="image">
-                                {props => (
-                                    <div>
-                                        <FormControl fullWidth margin="normal">
-                                            <FormLabel component="legend">Image</FormLabel>
-                                            <Stack spacing={1} direction="row" justifyContent="flex-end"> 
-                                                <TextField
-                                                    name={props.input.name}
-                                                    value={props.input.value}
-                                                    onChange={props.input.onChange}
-                                                    fullWidth
-                                                />
-                                            </Stack>
-                                        </FormControl>
-                                    </div>
-                                )}
-                            </Field>
                             <Field name="type_id">
                                 {props => (
                                     <div>

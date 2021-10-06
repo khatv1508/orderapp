@@ -3,15 +3,17 @@ import ImageUploading from 'react-images-uploading';
 import {
     Button, 
     Dialog,
+    DialogActions,
     DialogContent,
     DialogTitle,
-    FormControl,
-    Stack
+    Box,
+    Stack,
 }from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { menuFormSlice } from "../../store/slices/menu-form";
 import { snackBarSlice } from "../../store/slices/snack-bar";
-import { Form, Field } from 'react-final-form';
+import { RiImageAddFill } from "react-icons/ri";
+import NoImage from "../../assets/image/no-image.png";
 
 function ImageMenu() {
     const [images, setImages] = React.useState([]);
@@ -47,69 +49,64 @@ function ImageMenu() {
     return (
         <div>
             <Dialog open={Boolean(image_menu)} onClose={handleClose}>
-                <DialogTitle>Add image</DialogTitle>
+                <DialogTitle>Image Management</DialogTitle>
                 <DialogContent>
-                    <Form
-                        onSubmit={onSubmit}
-                        // initialValues={{ ...formData }}
-                        render={({ handleSubmit, form, submitting, pristine, values }) => (
-                            <form onSubmit={handleSubmit} style={{minWidth: '500px'}}>
-                                <Field name="images">
-                                    {props => (
-                                        <div>
-                                            <FormControl fullWidth margin="normal">
-                                                <ImageUploading
-                                                    multiple
-                                                    value={images}
-                                                    onChange={onChange}
-                                                    maxNumber={maxNumber}
-                                                    dataURLKey="data_url"
-                                                    acceptType={['jpg', 'gif', 'png']}
-                                                    inputProps={{name: props.input.name}}
-                                                >
-                                                    {({
-                                                    imageList,
-                                                    onImageUpload,
-                                                    onImageRemoveAll,
-                                                    onImageUpdate,
-                                                    onImageRemove,
-                                                    dragProps
-                                                    }) => (
-                                                    <div className="upload__image-wrapper">
-                                                        <Button
-                                                        onClick={onImageUpload}
-                                                        {...dragProps}
-                                                        >
-                                                        Choose images
-                                                        </Button>
-                                                        <Button onClick={onImageRemoveAll}>Remove all images</Button>
-                                                        {imageList.map((image, index) => (
-                                                            <div key={index}>
-                                                                <img src={image['data_url']} alt="" width="200px"/>
-                                                                <div>
-                                                                <Button onClick={() => onImageUpdate(index)}>Update</Button>
-                                                                <Button onClick={() => onImageRemove(index)}>Remove</Button>
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                    )}
-                                                </ImageUploading>
-                                            </FormControl>
-                                        </div>
-                                    )}
-                                </Field>
-
-                                <pre>{JSON.stringify(values, 0, 2)}</pre>
-
-                                <Stack spacing={2} direction="row" justifyContent="flex-end" sx={{ p: 1 }}> 
-                                    <Button variant="outlined" type="submit" disabled={submitting} >Apply</Button>
-                                    <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+                <ImageUploading
+                    multiple={false}
+                    value={images}
+                    onChange={onChange}
+                    maxNumber={maxNumber}
+                    dataURLKey="data_url"
+                    acceptType={['jpg', 'gif', 'png']}
+                >
+                    {({
+                    imageList,
+                    onImageUpload,
+                    onImageRemoveAll,
+                    onImageUpdate,
+                    onImageRemove,
+                    dragProps
+                    }) => (
+                    <div className="upload__image-wrapper">
+                        <Stack spacing={2} direction="row" justifyContent="center" sx={{ p: 1 }}> 
+                            <Button onClick={onImageUpload} {...dragProps} startIcon={<RiImageAddFill />}>Choose images</Button>
+                            {/* <Button onClick={onImageRemoveAll} startIcon={<RiDeleteBin2Line />}>Remove</Button> */}
+                        </Stack>
+                        <Box mt={1} sx={{
+                            p: 2, 
+                            border: '1px dashed tomato', 
+                            borderRadius: '10px',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            flexWrap: 'wrap'
+                        }}>
+                            {imageList.length > 0 ? imageList.map((image, index) => (
+                                <Stack key={index} 
+                                    spacing={1} 
+                                    direction="column" 
+                                    justifyContent="center" 
+                                    sx={{ p: 2, width: '100%' }}
+                                >
+                                    <img src={image['data_url']} alt="" width="100%"/>
+                                    <Stack direction="row" justifyContent="center">
+                                        <Button onClick={() => onImageUpdate(index)}>Update</Button>
+                                        <Button onClick={() => onImageRemove(index)}>Remove</Button>
+                                    </Stack>
                                 </Stack>
-                            </form>
-                        )}
-                    />
+                            )) : <img src={NoImage} alt="" width="100%"/>
+                            }
+                        </Box>
+                    </div>
+                    )}
+                </ImageUploading>
+                <pre>{JSON.stringify(images, 0, 2)}</pre>
                 </DialogContent>
+                <DialogActions>
+                    <Stack spacing={2} direction="row" justifyContent="flex-end" sx={{ p: 1 }}> 
+                        <Button variant="outlined" onClick={onSubmit}>Apply</Button>
+                        <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+                    </Stack>
+                </DialogActions>
             </Dialog>
         </div>
     );
