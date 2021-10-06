@@ -45,19 +45,39 @@ exports.create = (req, res) => {
     });
 };
 
+const getPagination = (page, size) => {
+  const limit = size ? +size : 4;
+  const offset = page ? ((+page - 1) * limit) : 0;
+
+  return { limit, offset };
+};
+
+const getPagingData = (data, page, limit) => {
+  const { count: totalItems, rows: menus } = data;
+  const currentPage = page ? +page : 1;
+  const totalPages = Math.ceil(totalItems / limit);
+
+  return { totalItems, menus, totalPages, currentPage };
+};
+
 // Retrieve all Menu from the database.
 exports.findAll = (req, res) => {
-    const food_name = req.query.food_name;
+    const { page, size, food_name } = req.query;
     var condition = food_name 
     ? { food_name: { [Op.like]: `%${food_name}%` } } 
     : null;
 
-    Menu.findAll({ 
+    const { limit, offset } = getPagination(page, size);
+
+    Menu.findAndCountAll({ 
       where: condition, 
+      limit, 
+      offset,
       include: ["type"]
     })
     .then(data => {
-      res.send(data);
+      const response = getPagingData(data, page, limit);
+      res.send(response);
     })
     .catch(err => {
       res.status(500).send({
@@ -146,4 +166,29 @@ exports.findAllByType = (req, res) => {
           err.message || "Some error occurred while retrieving Menu."
       });
     });
+};
+
+// Update image of Menu by the id in the request
+exports.updateImage = (req, res) => {
+  const id = req.params.id;
+
+  Menu.update(req.body, {
+    where: { id: id }
+  })
+  .then(num => {
+    if (num == 1) {
+      res.send({
+        message: "Menu was updated successfully."
+      });
+    } else {
+      res.send({
+        message: `Cannot update Menu with id=${id}. Maybe Menu was not found or req.body is empty!`
+      });
+    }
+  })
+  .catch(err => {
+    res.status(500).send({
+      message: `Could not delete Menu with id=${id}`
+    });
+  });
 };

@@ -9,13 +9,30 @@ export const menuFormSlice = createSlice({
           type: "add",
         },
         delete_menu: 0,
-        image_menu: 0
+        image_menu: 0,
+        list_menu: undefined,
+        pagination: {
+            totalItems: undefined,
+            totalPages: undefined,
+            currentPage: undefined
+        }
     },
     reducers: {
         setMenu: (state, action) => {
             return {
                 ...state,
                 menu: action.payload
+            }
+        },
+        setListMenu: (state, action) => {
+            return {
+                ...state,
+                list_menu: action.payload.menus, 
+                pagination: {
+                    totalItems: action.payload.totalItems,
+                    totalPages: action.payload.totalPages,
+                    currentPage: action.payload.currentPage
+                }
             }
         },
         setAddMenu: (state, action) => {

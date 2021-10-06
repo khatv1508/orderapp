@@ -12,7 +12,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { tableFormSlice} from "../../store/slices/table-form";
 import {Form, Field} from 'react-final-form';
-import { fetchAddTable, fetchAllTable } from "../../store/thunk/thunk-table";
+import { fetchAddTable } from "../../store/thunk/thunk-table";
 
 function AddTable() {
   const {add_table} = useSelector((state) => state.tableForm);
@@ -24,14 +24,13 @@ function AddTable() {
   };
 
   const onSubmit = async (values) => {
-    values.number && dispatch(fetchAddTable(values.number));
+    values.table_number && dispatch(fetchAddTable(values.table_number));
     handleClose();
-    dispatch(fetchAllTable());
   }
 
   const formData = {
-      id: undefined,
-      number: undefined
+      table_id: undefined,
+      table_number: undefined
   };
 
   return (
@@ -44,7 +43,7 @@ function AddTable() {
             initialValues={{ ...formData }}
             render={({ handleSubmit, form, submitting, pristine, values }) => (
               <form onSubmit={handleSubmit} style={{minWidth: '300px'}}>
-                <Field name="number">
+                <Field name="table_number">
                   {props => (
                     <div>
                       <FormControl fullWidth margin="normal">

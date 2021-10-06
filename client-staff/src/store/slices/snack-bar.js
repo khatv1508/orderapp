@@ -3,22 +3,26 @@ import { createSlice } from '@reduxjs/toolkit';
 export const snackBarSlice = createSlice({
     name: 'snack-bar',
     initialState: {
-        isOpen: 0,
-        severity: "info",
-        message: ""
+        isOpen: undefined,
+        severity: undefined,
+        message: undefined
     },
     reducers: {
-        setOpen: (state, action) => {
+        setSnackBar: (state, action) => {
+            if (action.payload) {
+                return {
+                    ...state,
+                    isOpen: {},
+                    severity: action.payload.severity,
+                    message: action.payload.message
+                }
+            } 
+            
             return {
                 ...state,
-                isOpen: action.payload
-            }
-        },
-        setContent: (state, action) => {
-            return {
-                ...state,
-                severity: action.payload.severity,
-                message: action.payload.message
+                isOpen: undefined,
+                severity: undefined,
+                message: undefined
             }
         }
     }

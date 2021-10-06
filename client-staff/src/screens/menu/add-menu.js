@@ -13,41 +13,36 @@ import {
 }from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { menuFormSlice } from "../../store/slices/menu-form";
-import { snackBarSlice } from "../../store/slices/snack-bar";
 import { Form, Field } from 'react-final-form';
+import { fetchAddMenu, fetchUpdateMenu } from "../../store/thunk/thunk-menu";
 
 function AddMenu() {
     const {add_menu, menu} = useSelector((state) => state.menuForm);
     const dispatch = useDispatch();
 
-    // const [selectValue, setSelectValue] = React.useState();
-
     const handleClose = () => {
         dispatch(menuFormSlice.actions.setAddMenu({open: 0, type: ""}));
         dispatch(menuFormSlice.actions.setMenu(undefined));
-        // console.log(selectValue);    
     };
 
     const onSubmit = async (values) => {
-        // await sleep(300);
-        window.alert(JSON.stringify(menu));
-
-        // TODO: Call API
-        dispatch(snackBarSlice.actions.setOpen(1));
-        dispatch(snackBarSlice.actions.setContent({severity: "success", message: "Success!"}));
-
+        if (values.id) {
+            dispatch(fetchUpdateMenu(values));
+        } else {
+            dispatch(fetchAddMenu(values));
+        }
         handleClose();
     };
 
     const formData = menu ? {
         id: menu.id,
-        name: menu.name,
+        food_name: menu.food_name,
         price: menu.price,
         image: menu.image,
         type_id: menu.type_id
     } : {
         id: undefined,
-        name: undefined,
+        food_name: undefined,
         price: undefined,
         image: "",
         type_id: 0,
@@ -63,7 +58,7 @@ function AddMenu() {
                     initialValues={{ ...formData }}
                     render={({ handleSubmit, form, submitting, pristine, values }) => (
                         <form onSubmit={handleSubmit} style={{minWidth: '300px'}}>
-                            <Field name="name">
+                            <Field name="food_name">
                                 {props => (
                                     <div>
                                         <FormControl fullWidth margin="normal">

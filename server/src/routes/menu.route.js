@@ -11,14 +11,17 @@ module.exports = app => {
   // Retrieve a single Menu with id
   router.get("/:id", menuController.findOne);
 
-  // // Update a Menu with id
+  // Update a Menu with id
   router.put("/:id", menuController.update);
 
-  // // Delete a Menu with id
+  // Delete a Menu with id
   router.delete("/:id", menuController.delete);
 
   // Retrieve all type_id Menu
   router.get("/type/:type_id", menuController.findAllByType);
+
+  // Update image of Menu by id
+  router.put("/image/:id", menuController.updateImage);
 
   app.use('/api/menu', router);
 };

@@ -120,9 +120,6 @@ const validate = async (reqBody) => {
         } 
       }
   }
-
-  
-
   return message;
 }
 

@@ -96,7 +96,6 @@ const Menu = () => {
             </div>
             
             <List className="list">
-                
                 <ListItemButton>
                     <ListItemIcon>
                         <CgLogOut />

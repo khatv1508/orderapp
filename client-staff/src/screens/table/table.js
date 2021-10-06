@@ -1,4 +1,5 @@
 import "./table.css";
+import React from "react";
 import {
     Table,
     TableBody, 
@@ -18,7 +19,6 @@ import { tableFormSlice} from "../../store/slices/table-form";
 import RefreshBtn from "../../components/refresh-btn/refresh";
 import { SiAirtable } from "react-icons/si";
 import { fetchAllTable } from "../../store/thunk/thunk-table";
-import React from "react";
 
 function TableManagement() {
   const {list_table} = useSelector((state) => state.tableForm);

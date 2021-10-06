@@ -19,22 +19,15 @@ export const fetchAllTable = () => async dispatch => {
     
         const result = await response.json();
         if (result) {
-            console.log(result);
-
             // save list table
             dispatch(tableFormSlice.actions.setListTable(result));
-
-
             // show snack-bar
-            dispatch(snackBarSlice.actions.setOpen(1));
-            dispatch(snackBarSlice.actions.setContent({severity: "success", message: "Get all table success!"}));
+            dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: "Get all table success!"}));
         } else {
-            dispatch(snackBarSlice.actions.setOpen(1));
-            dispatch(snackBarSlice.actions.setContent({severity: "warning", message: "Can not get result"}));
+            dispatch(snackBarSlice.actions.setSnackBar({severity: "warning", message: "Can not get result"}));
         }
     } catch (error) {
-        dispatch(snackBarSlice.actions.setOpen(1));
-        dispatch(snackBarSlice.actions.setContent({severity: "error", message: "Fail! " + error}));
+        dispatch(snackBarSlice.actions.setSnackBar({severity: "error", message: "Fail! " + error}));
     }
 }
 
@@ -55,15 +48,13 @@ export const fetchAddTable = (number) => async dispatch => {
         const result = await response.json();
         if (result) {
             // show snack-bar
-            dispatch(snackBarSlice.actions.setOpen(1));
-            dispatch(snackBarSlice.actions.setContent({severity: "success", message: "Add table success!"}));
+            dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: "Add table success!"}));
+            dispatch(fetchAllTable());
         } else {
-            dispatch(snackBarSlice.actions.setOpen(1));
-            dispatch(snackBarSlice.actions.setContent({severity: "warning", message: "Can not add table"}));
+            dispatch(snackBarSlice.actions.setSnackBar({severity: "warning", message: "Can not add table"}));
         }
     } catch (error) {
-        dispatch(snackBarSlice.actions.setOpen(1));
-        dispatch(snackBarSlice.actions.setContent({severity: "error", message: "Fail! " + error}));
+        dispatch(snackBarSlice.actions.setSnackBar({severity: "error", message: "Fail! " + error}));
     }
 }
 
@@ -80,15 +71,13 @@ export const fetchDeleteTable = (id) => async dispatch => {
         const result = await response.json();
         if (result) {
             // show snack-bar
-            dispatch(snackBarSlice.actions.setOpen(1));
-            dispatch(snackBarSlice.actions.setContent({severity: "success", message: result.message}));
+            dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: result.message}));
+            dispatch(fetchAllTable());
         } else {
-            dispatch(snackBarSlice.actions.setOpen(1));
-            dispatch(snackBarSlice.actions.setContent({severity: "warning", message: "Can not delete table"}));
+            dispatch(snackBarSlice.actions.setSnackBar({severity: "warning", message: "Can not delete table"}));
         }
     } catch (error) {
-        dispatch(snackBarSlice.actions.setOpen(1));
-        dispatch(snackBarSlice.actions.setContent({severity: "error", message: "Fail! " + error}));
+        dispatch(snackBarSlice.actions.setSnackBar({severity: "error", message: "Fail! " + error}));
     }
     
 }

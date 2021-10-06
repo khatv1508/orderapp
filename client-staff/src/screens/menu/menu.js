@@ -1,4 +1,5 @@
 import "./menu.css";
+import React from "react";
 import {
     Table,
     TableBody, 
@@ -16,49 +17,31 @@ import RefreshBtn from "../../components/refresh-btn/refresh";
 import { RiMenuAddFill, RiImageAddFill } from "react-icons/ri";
 import { BiEdit } from "react-icons/bi";
 import { MdDelete} from "react-icons/md";
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { menuFormSlice } from "../../store/slices/menu-form";
 import AddMenu from "./add-menu";
 import DeleteMenu from "./delete-menu";
 import ImageMenu from "./image-menu";
 import NoImage from "../../assets/image/no-image.png";
 
-const menus = [{
-  id: 1,
-  type_id: 1,
-  type_name: "Món ăn",
-  name: "Combo thăn vai bò Mỹ",
-  price: 50000,
-  imageUrl: ""
-},
-{
-  id: 2,
-  type_id: 1,
-  type_name: "Món ăn",
-  name: "Combo ba chỉ bò Mỹ",
-  price: 50000,
-  imageUrl: ""
-},
-{
-  id: 3,
-  type_id: 1,
-  type_name: "Món ăn",
-  name: "Sumo Special Course",
-  price: 50000,
-  imageUrl: ""
-},
-{
-  id: 4,
-  type_id: 1,
-  type_name: "Món ăn",
-  name: "Sumo Special Course",
-  price: 50000,
-  imageUrl: ""
-}];
+import { fetchAllMenu, } from "../../store/thunk/thunk-menu";
 
 function Menu() {
 
+  const {list_menu, pagination} = useSelector((state) => state.menuForm);
   const dispatch = useDispatch();
+
+  const [menus, setMenus] = React.useState(list_menu);
+
+  React.useEffect(() => {
+    setMenus(list_menu);
+  }, [list_menu]);
+
+  const [paginate, setPaginate] = React.useState(pagination);
+
+  React.useEffect(() => {
+    setPaginate(pagination);
+  }, [pagination]);
 
   const addHandleClick = () => {
     dispatch(menuFormSlice.actions.setAddMenu({open: 1, type: "add"}));
@@ -77,8 +60,17 @@ function Menu() {
     dispatch(menuFormSlice.actions.setMenu(menu));
   }
 
-  const UploadHandleClick = () => {
+  const uploadHandleClick = (menu) => {
     dispatch(menuFormSlice.actions.setImageMenu(1));
+    dispatch(menuFormSlice.actions.setMenu(menu));
+  }
+
+  const handleChangePage = (event, newPage) => {
+    dispatch(fetchAllMenu(newPage, undefined));
+  };
+
+  const onHandleClick = () => {
+    dispatch(fetchAllMenu());
   }
 
   return (
@@ -94,7 +86,7 @@ function Menu() {
             startIcon={<RiMenuAddFill style={{width: "23px", height: "23px"}}/>}>
             <span style={{fontSize: "18px"}}>Add</span>
           </Button>
-          <RefreshBtn />
+          <RefreshBtn onHandleClick={onHandleClick}/>
         </div>
       </div>
         
@@ -112,16 +104,18 @@ function Menu() {
               </TableRow>
             </TableHead>
             <TableBody>
-            {menus.map((menu, index) => {
+            {menus && menus.map((menu, index) => {
               return (
                 <TableRow key={index}>
                   <TableCell align="center">{menu.id}</TableCell>
-                  <TableCell align="center">{menu.type_name}</TableCell>
-                  <TableCell align="center">{menu.name}</TableCell>
+                  <TableCell align="center">{menu.type.type_name}</TableCell>
+                  <TableCell align="center">{menu.food_name}</TableCell>
                   <TableCell align="center">{menu.price}</TableCell>
-                  <TableCell align="center"><img src={menu.imageUrl ? menu.imageUrl : NoImage} alt="" style={{width: "150px"}}/></TableCell>
                   <TableCell align="center">
-                    <IconButton onClick={UploadHandleClick}><RiImageAddFill /></IconButton>
+                    <img src={menu.image ? menu.image : NoImage} alt="" style={{width: "120px", height: "120px"}}/>
+                  </TableCell>
+                  <TableCell align="center">
+                    <IconButton onClick={() => uploadHandleClick(menu)}><RiImageAddFill /></IconButton>
                     <IconButton onClick={() => editHandleClick(menu)}><BiEdit /></IconButton>
                     <IconButton onClick={() => deleteHandleClick(menu)}><MdDelete /></IconButton>
                   </TableCell>
@@ -131,9 +125,15 @@ function Menu() {
             </TableBody>
           </Table>
         </TableContainer>
-        <Stack mt={3} spacing={3} justifyContent="center" alignItems="center" sx={{width: "100%"}}>
+        <Stack mt={2} spacing={3} justifyContent="center" alignItems="center" sx={{width: "100%"}}>
           <Paper sx={{padding: "10px", borderRadius: "10px"}}>
-            <Pagination size="large" count={6} variant="outlined" color="primary" />
+            <Pagination size="large" 
+            count={paginate.totalPages ? paginate.totalPages : 1} 
+            variant="outlined" 
+            color="primary"
+            page={paginate.currentPage ? paginate.currentPage : 1}
+            onChange={handleChangePage}
+            />
           </Paper>
         </Stack>
       </div>

@@ -9,7 +9,7 @@ import {
 }from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { tableFormSlice } from "../../store/slices/table-form";
-import { fetchDeleteTable, fetchAllTable } from "../../store/thunk/thunk-table";
+import { fetchDeleteTable } from "../../store/thunk/thunk-table";
 
 function DeleteMenu() {
   const {delete_table, table} = useSelector((state) => state.tableForm);
@@ -23,7 +23,6 @@ function DeleteMenu() {
   const handleApply = () => {
     dispatch(fetchDeleteTable(table.table_id));
     handleClose();
-    dispatch(fetchAllTable());
   };
   return (
     <div>

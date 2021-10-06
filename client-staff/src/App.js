@@ -1,4 +1,5 @@
 import './App.css';
+import React from "react";
 import Menu from "./components/menu/menu";
 import {
   Switch,
@@ -12,9 +13,10 @@ import Account from './screens/account/account';
 import MenuManagement from './screens/menu/menu';
 import Table from './screens/table/table';
 import SnackBar from "./components/snack-bar/snack-bar";
-import { fetchAllTable } from "./store/thunk/thunk-table";
 import { useDispatch } from 'react-redux';
-import React from "react";
+
+import { fetchAllTable } from "./store/thunk/thunk-table";
+import { fetchAllMenu } from "./store/thunk/thunk-menu";
 
 
 function App() {
@@ -24,6 +26,7 @@ function App() {
   // load data 
   React.useEffect(() => {
     dispatch(fetchAllTable());
+    dispatch(fetchAllMenu());
     // eslint-disable-next-line
   }, []);
 

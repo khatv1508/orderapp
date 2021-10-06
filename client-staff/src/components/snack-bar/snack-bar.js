@@ -11,21 +11,23 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 function SnackBar() {
-    const {isOpen, severity, message } = useSelector((state) => state.snackBar);
+    const { isOpen, severity, message } = useSelector((state) => state.snackBar);
     const dispatch = useDispatch();
 
     const handleClose = () => {
-        dispatch(snackBarSlice.actions.setOpen(0));
-        dispatch(snackBarSlice.actions.setContent({severity: "info", message: ""}));
+        dispatch(snackBarSlice.actions.setSnackBar(undefined));
     };
 
     return (
-        <Snackbar open={Boolean(isOpen)} autoHideDuration={3000} onClose={handleClose} 
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}>
-            <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>
-            {message}
-            </Alert>
-        </Snackbar>
+        <>
+            {isOpen && <Snackbar open={true} autoHideDuration={3000} onClose={handleClose} 
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+                    <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>
+                        {message}
+                    </Alert>
+                </Snackbar>
+            }
+        </>
     );
 }
 

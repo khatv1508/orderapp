@@ -9,6 +9,7 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 
 // import thunk
 import { fetchAllTable, fetchAddTable, fetchDeleteTable } from "./thunk/thunk-table";
+import { fetchAllMenu, fetchAddMenu, fetchDeleteMenu, fetchUpdateMenu, fetchUpdateImageMenu } from "./thunk/thunk-menu";
 
 const reducer = combineReducers({
   menu: menuSlice.reducer,
@@ -29,3 +30,8 @@ export const store = createStore(
 store.dispatch(fetchAllTable);
 store.dispatch(fetchAddTable);
 store.dispatch(fetchDeleteTable);
+store.dispatch(fetchAllMenu);
+store.dispatch(fetchAddMenu);
+store.dispatch(fetchUpdateMenu);
+store.dispatch(fetchUpdateImageMenu);
+store.dispatch(fetchDeleteMenu);
