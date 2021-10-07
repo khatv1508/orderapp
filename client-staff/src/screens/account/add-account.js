@@ -22,6 +22,7 @@ import generator from 'generate-password';
 import { BiCopy } from 'react-icons/bi';
 import { snackBarSlice } from "../../store/slices/snack-bar";
 import { copyToClipboard } from "../../common/copyToClipBoard";
+import { fetchAddAccount, fetchUpdateAccount } from "../../store/thunk/thunk-account";
 
 function AddForm() {
     const {add_form, account} = useSelector((state) => state.accountForm);
@@ -32,23 +33,18 @@ function AddForm() {
         dispatch(accountFormSlice.actions.setAccount(undefined));
     };
 
-    // const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
     const onSubmit = async (values) => {
-        // await sleep(300);
-        // window.alert(JSON.stringify(values, 0, 2));
-
-        // TODO: Call API
-        dispatch(snackBarSlice.actions.setOpen(1));
-        dispatch(snackBarSlice.actions.setContent({severity: "success", message: "Success!"}));
-
+        if (values.id) {
+            dispatch(fetchUpdateAccount(values));
+        } else {
+            dispatch(fetchAddAccount(values));
+        }
         handleClose();
     };
 
     const handleCopyToClipBoard = () => {
         copyToClipboard(pass);
-        dispatch(snackBarSlice.actions.setOpen(1));
-        dispatch(snackBarSlice.actions.setContent({severity: "success", message: "Coppied!"}));
+        dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: "Coppied!"}));
     }
 
     const pass = generator.generate({
@@ -58,14 +54,14 @@ function AddForm() {
 
     const formData = account ? {
         id: account.id,
-        name: account.name,
-        role: account.role_id,
-        status: account.status
+        account_name: account.account_name,
+        role_id: account.role_id,
+        account_status: account.account_status
     } : {
         id: undefined,
-        password: pass,
-        role: 0,
-        status: 1,
+        account_pass: pass,
+        role_id: 0,
+        account_status: 0,
     };
 
     return (
@@ -78,7 +74,7 @@ function AddForm() {
                         initialValues={{ ...formData }}
                         render={({ handleSubmit, form, submitting, pristine, values }) => (
                             <form onSubmit={handleSubmit} style={{minWidth: '300px'}}>
-                                <Field name="name">
+                                <Field name="account_name">
                                     {props => (
                                         <div>
                                             <FormControl fullWidth margin="normal">
@@ -93,7 +89,7 @@ function AddForm() {
                                         </div>
                                     )}
                                 </Field>
-                                {!account && <Field name="password">
+                                {!account && <Field name="account_pass">
                                     {props => (
                                         <div>
                                             <FormControl fullWidth margin="normal">
@@ -112,7 +108,7 @@ function AddForm() {
                                         </div>
                                     )}
                                 </Field>}
-                                <Field name="role">
+                                <Field name="role_id">
                                     {props => (
                                         <div>
                                             <FormControl fullWidth margin="normal">
@@ -130,7 +126,7 @@ function AddForm() {
                                         </div>
                                     )}
                                 </Field>
-                                <Field name="status">
+                                <Field name="account_status">
                                     {props => (
                                         <div>
                                             <FormControl component="fieldset" fullWidth margin="normal">
@@ -139,8 +135,8 @@ function AddForm() {
                                                     name={props.input.name}
                                                     onChange={props.input.onChange}
                                                 >
-                                                    <FormControlLabel value={1} control={<Radio checked={parseInt(values.status) === 1}/>} label="Active" />
-                                                    <FormControlLabel value={0} control={<Radio checked={parseInt(values.status) === 0}/>} label="Inactive" />
+                                                    <FormControlLabel value={1} control={<Radio checked={parseInt(values.account_status) === 1}/>} label="Active" />
+                                                    <FormControlLabel value={0} control={<Radio checked={parseInt(values.account_status) === 0}/>} label="Inactive" />
                                                 </RadioGroup>
                                             </FormControl>
                                         </div>

@@ -8,8 +8,25 @@ import thunkMiddleware from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
 // import thunk
-import { fetchAllTable, fetchAddTable, fetchDeleteTable } from "./thunk/thunk-table";
-import { fetchAllMenu, fetchAddMenu, fetchDeleteMenu, fetchUpdateMenu, fetchUpdateImageMenu } from "./thunk/thunk-menu";
+import { 
+  fetchAllTable, 
+  fetchAddTable, 
+  fetchDeleteTable 
+} from "./thunk/thunk-table";
+import { 
+  fetchAllMenu, 
+  fetchAddMenu, 
+  fetchDeleteMenu, 
+  fetchUpdateMenu, 
+  fetchUpdateImageMenu 
+} from "./thunk/thunk-menu";
+import { 
+  fetchAllAccount, 
+  fetchAddAccount, 
+  fetchUpdateAccount,
+  fetchResetPassAccount,
+  fetchDeleteAccount 
+} from "./thunk/thunk-account";
 
 const reducer = combineReducers({
   menu: menuSlice.reducer,
@@ -27,11 +44,21 @@ export const store = createStore(
 );
 
 // dispatch thunk
+// table
 store.dispatch(fetchAllTable);
 store.dispatch(fetchAddTable);
 store.dispatch(fetchDeleteTable);
+
+// menu
 store.dispatch(fetchAllMenu);
 store.dispatch(fetchAddMenu);
 store.dispatch(fetchUpdateMenu);
 store.dispatch(fetchUpdateImageMenu);
 store.dispatch(fetchDeleteMenu);
+
+// account
+store.dispatch(fetchAllAccount);
+store.dispatch(fetchAddAccount);
+store.dispatch(fetchUpdateAccount);
+store.dispatch(fetchResetPassAccount);
+store.dispatch(fetchDeleteAccount);

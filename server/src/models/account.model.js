@@ -26,7 +26,7 @@ module.exports = (sequelize, Sequelize) => {
         }
       },
       account_status: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.INTEGER
       }
     }, { sequelize, modelName: 'accounts', timestamps: false, underscored: true});
     return Account;

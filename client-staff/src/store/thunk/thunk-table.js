@@ -48,7 +48,7 @@ export const fetchAddTable = (number) => async dispatch => {
         const result = await response.json();
         if (result) {
             // show snack-bar
-            dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: "Add table success!"}));
+            dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: result.message}));
             dispatch(fetchAllTable());
         } else {
             dispatch(snackBarSlice.actions.setSnackBar({severity: "warning", message: "Can not add table"}));

@@ -17,11 +17,12 @@ import { Form, Field } from 'react-final-form'
 import { BiCopy } from 'react-icons/bi';
 import generator from 'generate-password';
 import { copyToClipboard } from "../../common/copyToClipBoard";
+import { fetchResetPassAccount } from "../../store/thunk/thunk-account";
 
 const ResetAdmin = () => {
     return (
         <div>
-            <Field name="old-pass">
+            <Field name="old_pass">
                 {props => (
                     <div>
                         <FormControl fullWidth margin="normal">
@@ -38,7 +39,7 @@ const ResetAdmin = () => {
                     </div>
                 )}
             </Field>
-            <Field name="new-pass">
+            <Field name="new_pass">
                 {props => (
                     <div>
                         <FormControl fullWidth margin="normal">
@@ -53,7 +54,7 @@ const ResetAdmin = () => {
                     </div>
                 )}
             </Field>
-            <Field name="Confirm-pass">
+            <Field name="confirm_pass">
                 {props => (
                     <div>
                         <FormControl fullWidth margin="normal">
@@ -77,7 +78,7 @@ const ResetAdmin = () => {
 const ResetAccount = ({copyClipBoard}) => {
     return (
         <div>
-            <Field name="password">
+            <Field name="account_pass">
                 {props => (
                     <div>
                         <FormControl fullWidth margin="normal">
@@ -109,19 +110,31 @@ function ResetForm() {
         dispatch(accountFormSlice.actions.setAccount(undefined));
     };
 
-    const onSubmit = async (values) => {
-
-        // TODO: Call API
-        dispatch(snackBarSlice.actions.setOpen(1));
-        dispatch(snackBarSlice.actions.setContent({severity: "success", message: "error"}));
-
+    const onSubmit = (values) => {
+        if (values) {
+            //  check role admin
+            if(account.role_id === 1) {
+                // check confirm password
+                if (values.new_pass === values.confirm_pass) {
+                    dispatch(fetchResetPassAccount({
+                        id: account.id,
+                        old_pass: values.old_pass,
+                        account_pass: values.new_pass
+                    }));
+                } else {
+                    dispatch(snackBarSlice.actions.setSnackBar({
+                        severity: "error", 
+                        message: "Confirm pass must be the same as New pass"
+                    }));
+                }
+            } 
+        }
         handleClose();
     };
 
     const handleCopyToClipBoard = () => {
         copyToClipboard(pass);
-        dispatch(snackBarSlice.actions.setOpen(1));
-        dispatch(snackBarSlice.actions.setContent({severity: "success", message: "error"}));
+        dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: "Coppied!"}));
     }
 
     const pass = generator.generate({
@@ -133,7 +146,7 @@ function ResetForm() {
         id: account.id
     } : {
         id: account.id,
-        password: pass,
+        account_pass: pass,
     } : {
         id: undefined
     };
@@ -141,7 +154,7 @@ function ResetForm() {
     return (
         <div>
             <Dialog open={Boolean(reset_form)} onClose={handleClose}>
-                <DialogTitle>Reset Password for "{account && account.name}"</DialogTitle>
+                <DialogTitle>Reset Password for "{account && account.account_name}"</DialogTitle>
                 <DialogContent>
                     <Form
                         onSubmit={onSubmit}
@@ -153,7 +166,7 @@ function ResetForm() {
                                 <pre>{JSON.stringify(values, 0, 2)}</pre>
 
                                 <Stack spacing={2} direction="row" justifyContent="flex-end" sx={{ p: 1 }}> 
-                                    <Button variant="outlined" type="button" disabled={submitting} >Apply</Button>
+                                    <Button variant="outlined" type="submit" disabled={submitting} >Apply</Button>
                                     <Button variant="outlined" onClick={handleClose}>Cancel</Button>
                                 </Stack>
                             </form>

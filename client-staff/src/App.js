@@ -17,6 +17,7 @@ import { useDispatch } from 'react-redux';
 
 import { fetchAllTable } from "./store/thunk/thunk-table";
 import { fetchAllMenu } from "./store/thunk/thunk-menu";
+import { fetchAllAccount } from "./store/thunk/thunk-account";
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
   React.useEffect(() => {
     dispatch(fetchAllTable());
     dispatch(fetchAllMenu());
+    dispatch(fetchAllAccount());
     // eslint-disable-next-line
   }, []);
 

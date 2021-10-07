@@ -31,8 +31,8 @@ exports.create = (req, res) => {
     role_id: req.body.role_id,
     account_name: req.body.account_name,
     account_pass: req.body.account_pass,
-    create_date: req.body.create_date,
-    update_date: req.body.update_date,
+    create_date: dateConvert.currentDate(),
+    update_date: dateConvert.currentDate(),
     account_status: req.body.account_status
   };
 
@@ -94,11 +94,9 @@ exports.update = (req, res) => {
     role_id: req.body.role_id,
     account_name: req.body.account_name,
     account_pass: req.body.account_pass,
-    create_date: dateConvert.stringToDate(req.body.create_date),
     update_date: dateConvert.currentDate(),
     account_status: req.body.account_status
   };
-
 
   Account.update(account, {
     where: { id: id }
@@ -144,4 +142,54 @@ exports.delete = (req, res) => {
         message: `Could not delete Account with id=${id}`
       });
     });
+};
+
+// Reset password Account
+exports.resetPass = (req, res) => {
+  const id = req.params.id;
+  const account_pass = req.body.account_pass;
+
+  Account.update({account_pass: account_pass}, {
+    where: { id: id }
+  })
+  .then(num => {
+    if (num == 1) {
+      res.send({
+        message: "Account was reset password Account successfully."
+      });
+    } else {
+      res.send({
+        message: `Cannot reset password Account with id=${id}. Maybe Account was not found or req.body is empty!`
+      });
+    }
+  })
+  .catch(err => {
+    res.status(500).send({
+      message: `Error resetting password Account with id=${id}`
+    });
+  });
+};
+
+// Check old password Account
+exports.checkPass = (req, res) => {
+  const id = req.params.id;
+  const account_pass = req.body.account_pass;
+
+  Account.findByPk(id)
+  .then(data => {
+    if(data.account_pass == account_pass){
+      res.send({
+        message: `true`
+      });
+    } else {
+      res.send({
+        message: `false`
+      });
+    }
+  })
+  .catch(err => {
+    res.status(500).send({
+      message: `Error retrieving Account with id=${id}`
+    });
+  });
 };

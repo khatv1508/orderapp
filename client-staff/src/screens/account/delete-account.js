@@ -9,7 +9,7 @@ import {
 }from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { accountFormSlice } from "../../store/slices/account-form";
-import { snackBarSlice } from "../../store/slices/snack-bar";
+import { fetchDeleteAccount, fetchAllAccount } from "../../store/thunk/thunk-account";
 
 function DeleteAccount() {
   const {delete_account, account} = useSelector((state) => state.accountForm);
@@ -21,14 +21,9 @@ function DeleteAccount() {
   };
 
   const handleApply = () => {
-    // await sleep(300);
-    window.alert(JSON.stringify(account));
-
-    // TODO: Call API
-    dispatch(snackBarSlice.actions.setOpen(1));
-    dispatch(snackBarSlice.actions.setContent({severity: "success", message: "Delete complete!"}));
-
+    dispatch(fetchDeleteAccount(account.id));
     handleClose();
+    dispatch(fetchAllAccount());
   };
 
   return (
@@ -43,7 +38,7 @@ function DeleteAccount() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Do you want to delete "{account && account.name}" account?
+            Do you want to delete "{account && account.account_name}" account?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

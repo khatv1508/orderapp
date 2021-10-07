@@ -17,6 +17,12 @@ module.exports = app => {
   
     // Delete a Account with id
     router.delete("/:id", accountController.delete);
+
+    // Reset password Account with id
+    router.put("/pass/:id", accountController.resetPass);
+
+    // Check old password Account with id
+    router.post("/pass/:id", accountController.checkPass);
   
     app.use('/api/account', router);
   };

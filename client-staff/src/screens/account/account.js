@@ -19,31 +19,19 @@ import { MdDelete, MdVpnKey } from "react-icons/md";
 import AddAccount from "./add-account";
 import ResetPass from "./reset-pass-form";
 import DeleteAccount from "./delete-account";
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { accountFormSlice } from "../../store/slices/account-form";
-
-const accounts = [{
-  id: 1,
-  role: "Admin",
-  role_id: 1,
-  name: "admin",
-  create_date: "01-09-2021",
-  update_date: "02-09-2021",
-  status: 1
-},
-{
-  id: 2,
-  role: "Nhân viên",
-  role_id: 2,
-  name: "vinhkha.truong",
-  create_date: "01-09-2021",
-  update_date: "10-09-2021",
-  status: 0
-}
-];
+import { fetchAllAccount, } from "../../store/thunk/thunk-account";
 
 function Account() {
+  const {list_account} = useSelector((state) => state.accountForm);
   const dispatch = useDispatch();
+
+  const [accounts, setAccounts] = React.useState(list_account);
+
+  React.useEffect(() => {
+    setAccounts(list_account);
+  }, [list_account]);
 
   const addHandleClick = () => {
     dispatch(accountFormSlice.actions.setAddForm({open: 1, type: "add"}));
@@ -67,6 +55,10 @@ function Account() {
     dispatch(accountFormSlice.actions.setAccount(account));
   }
 
+  const onfetchAllAccount = () => {
+    dispatch(fetchAllAccount());
+  }
+
   return (
     <div>
       {/* form dialog */}
@@ -81,7 +73,7 @@ function Account() {
           startIcon={<IoMdPersonAdd style={{width: "23px", height: "23px"}}/> }>
             <span style={{fontSize: "18px"}}>Add</span>
         </Button>
-        <RefreshBtn />
+        <RefreshBtn onHandleClick={onfetchAllAccount}/>
         </div>
       </div>
       <div style={{padding: "0 20px"}}>
@@ -99,16 +91,16 @@ function Account() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {accounts.map((account, index) => {
+              {accounts && accounts.map((account, index) => {
                   return (
                     <TableRow key={index}>
                       <TableCell align="center">{account.id}</TableCell>
-                      <TableCell align="center">{account.role}</TableCell>
-                      <TableCell align="center">{account.name}</TableCell>
+                      <TableCell align="center">{account.role.role_id}</TableCell>
+                      <TableCell align="center">{account.account_name}</TableCell>
                       <TableCell align="center">{account.create_date}</TableCell>
                       <TableCell align="center">{account.update_date}</TableCell>
                       <TableCell align="center">
-                        <Switch defaultChecked={Boolean(account.status)} />
+                        <Switch checked={Boolean(account.account_status)} disabled/>
                       </TableCell>
                       <TableCell align="center">
                         <IconButton onClick={() => resetHandleClick(account)}><MdVpnKey /></IconButton>

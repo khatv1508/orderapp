@@ -67,7 +67,7 @@ export const fetchAddMenu = (menu) => async dispatch => {
         const result = await response.json();
         if (result) {
             // show snack-bar
-            dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: "Add menu success!"}));
+            dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: result.message}));
         } else {
             dispatch(snackBarSlice.actions.setSnackBar({severity: "warning", message: "Can not add menu"}));
         }
@@ -111,30 +111,7 @@ export const fetchUpdateMenu = (menu) => async (dispatch, getState) => {
     
 }
 
-// Delete menu
-export const fetchDeleteMenu = (id) => async dispatch => {
-    try {
-        const response = await fetch(API_URL.concat(DELETE_MENU.replace(':id', id)), {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        });
-    
-        const result = await response.json();
-        if (result) {
-            // show snack-bar
-            dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: result.message}));
-        } else {
-            dispatch(snackBarSlice.actions.setSnackBar({severity: "warning", message: "Can not delete table"}));
-        }
-    } catch (error) {
-        dispatch(snackBarSlice.actions.setSnackBar({severity: "error", message: "Fail! " + error}));
-    }
-    
-}
-
-// Update image 
+// Update image menu
 export const fetchUpdateImageMenu = (menu) => async (dispatch, getState) => {
     try {
         const state = getState();
@@ -160,6 +137,29 @@ export const fetchUpdateImageMenu = (menu) => async (dispatch, getState) => {
             dispatch(fetchAllMenu(pagination.currentPage, undefined));
         } else {
             dispatch(snackBarSlice.actions.setSnackBar({severity: "warning", message: "Can not update table"}));
+        }
+    } catch (error) {
+        dispatch(snackBarSlice.actions.setSnackBar({severity: "error", message: "Fail! " + error}));
+    }
+    
+}
+
+// Delete menu
+export const fetchDeleteMenu = (id) => async dispatch => {
+    try {
+        const response = await fetch(API_URL.concat(DELETE_MENU.replace(':id', id)), {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+    
+        const result = await response.json();
+        if (result) {
+            // show snack-bar
+            dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: result.message}));
+        } else {
+            dispatch(snackBarSlice.actions.setSnackBar({severity: "warning", message: "Can not delete table"}));
         }
     } catch (error) {
         dispatch(snackBarSlice.actions.setSnackBar({severity: "error", message: "Fail! " + error}));

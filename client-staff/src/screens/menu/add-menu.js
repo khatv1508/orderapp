@@ -24,7 +24,7 @@ function AddMenu() {
         dispatch(menuFormSlice.actions.setAddMenu({open: 0, type: ""}));
         dispatch(menuFormSlice.actions.setMenu(undefined));
     };
-
+    
     const onSubmit = async (values) => {
         if (values.id) {
             dispatch(fetchUpdateMenu(values));
