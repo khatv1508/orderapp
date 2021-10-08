@@ -9,13 +9,7 @@ import {
 
 import { snackBarSlice } from "../slices/snack-bar";
 import { menuFormSlice } from "../slices/menu-form";
-
-function encodeQueryData(data) {
-    const ret = [];
-    for (let d in data)
-      ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
-    return ret.join('&');
- }
+import { encodeQueryData } from "../../common/encodeQueryData";
 
 //  Get all menu
 export const fetchAllMenu = (page, size) => async dispatch => {

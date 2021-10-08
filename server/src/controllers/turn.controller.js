@@ -1,5 +1,9 @@
 const db = require("../models");
-const { Turn } = db;
+const { 
+  Turn,
+  BillDetail,
+  Menu 
+} = db;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Turn
@@ -34,13 +38,25 @@ exports.create = (req, res) => {
 // Retrieve all Turn from the database.
 exports.findAll = (req, res) => {
     const num = req.query.num;
+    const status = req.query.status;
+
     var condition = num 
     ? { num: { [Op.eq]: `%${num}%` } } 
+    : status 
+    ? { confirm_status: { [Op.eq]: status } } 
     : null;
 
     Turn.findAll({ 
-      where: condition, 
-      include: ["bill"]
+      where: condition,
+      order: [['id', 'DESC']], 
+      include: ["bill", {
+        model: BillDetail,
+        as: 'bill_details', 
+        include: {
+          model: Menu,
+          as: 'menu'
+        }
+      }]
     })
     .then(data => {
       res.send(data);
@@ -58,7 +74,14 @@ exports.findOne = (req, res) => {
     const id = req.params.id;
 
     Turn.findByPk(id, {
-      include: ["bill_details"]
+      include: [{
+        model: BillDetail,
+        as: 'bill_details', 
+        include: {
+          model: Menu,
+          as: 'menu'
+        }
+      }]
     })
     .then(data => {
       res.send(data);

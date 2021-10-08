@@ -220,7 +220,18 @@ exports.findAll = (req, res) => {
 
   Bill.findAll({
       where: condition,
-      include: ["table", "account"],
+      include: ["table", "account", {
+        model: Turn,
+        as: 'turns',
+        include: {
+          model: BillDetail,
+          as: 'bill_details', 
+          include: {
+            model: Menu,
+            as: 'menu'
+          }
+        }
+      }]
     })
     .then(data => {
       res.send(data);
@@ -242,7 +253,11 @@ exports.findOne = (req, res) => {
         as: 'turns',
         include: {
           model: BillDetail,
-          as: 'bill_details'
+          as: 'bill_details', 
+          include: {
+            model: Menu,
+            as: 'menu'
+          }
         }
       }]
     })

@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER
       },
       confirm_status: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.INTEGER
       }
     }, { sequelize, modelName: 'turns', timestamps: false, underscored: true});
     return Turn;

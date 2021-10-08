@@ -15,13 +15,16 @@ module.exports = (sequelize, Sequelize) => {
         }
       },
       check_out: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        get: function() {
+          return dateConvert.dateTimeToString(this.getDataValue('check_out'));
+        }
       },
       total: {
         type: Sequelize.DOUBLE
       },
       pay_status: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.INTEGER
       }
     }, { sequelize, modelName: 'bills', timestamps: false, underscored: true});
     return Bill;

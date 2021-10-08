@@ -1,104 +1,32 @@
-import HistoryOrder from '../../components/order/order';
+import './history.css';
+import React from "react";
 import {
     Grid,
 } from '@mui/material';
-import './history.css';
 import RefreshBtn from "../../components/refresh-btn/refresh";
-
-const orders = [{
-    table: 1,
-    turn: 1,
-    date: "25-09-2021 23:00 PM",
-    staffAvatar: "",
-    menus: [{
-        imageUrl: "https://images.foody.vn/res/g25/244037/s120x120/bc4f48e2-87c8-4f73-8a40-e08c44ae-a14c4fc5-201126092828.jpeg",
-        name: "Combo thăn vai bò Mỹ",
-        price: 50000,
-        qty: 1
-    }],
-    items: 1,
-    total: 50000,
-    status: 0
-  },
-  {
-    table: 2,
-    turn: 1,
-    date: "25-09-2021 18:00 PM",
-    staffAvatar: "",
-    menus: [{
-        imageUrl: "https://images.foody.vn/res/g25/244037/s120x120/bc4f48e2-87c8-4f73-8a40-e08c44ae-a14c4fc5-201126092828.jpeg",
-        name: "Combo thăn vai bò Mỹ",
-        price: 50000,
-        qty: 1
-    },
-    {
-        imageUrl: "",
-        name: "Combo thăn vai bò Mỹ",
-        price: 50000,
-        qty: 1
-    }],
-    items: 2,
-    total: 100000,
-    status: 1
-  },
-  {
-    table: 1,
-    turn: 1,
-    date: "25-09-2021 23:00 PM",
-    staffAvatar: "",
-    menus: [{
-        imageUrl: "https://images.foody.vn/res/g25/244037/s120x120/bc4f48e2-87c8-4f73-8a40-e08c44ae-a14c4fc5-201126092828.jpeg",
-        name: "Combo thăn vai bò Mỹ",
-        price: 50000,
-        qty: 1
-    }],
-    items: 1,
-    total: 50000,
-    status: 0
-  },
-  {
-    table: 2,
-    turn: 1,
-    date: "25-09-2021 18:00 PM",
-    staffAvatar: "",
-    menus: [{
-        imageUrl: "https://images.foody.vn/res/g25/244037/s120x120/bc4f48e2-87c8-4f73-8a40-e08c44ae-a14c4fc5-201126092828.jpeg",
-        name: "Combo thăn vai bò Mỹ",
-        price: 50000,
-        qty: 1
-    },
-    {
-        imageUrl: "",
-        name: "Combo thăn vai bò Mỹ",
-        price: 50000,
-        qty: 1
-    }],
-    items: 2,
-    total: 100000,
-    status: 0
-  },
-  {
-    table: 1,
-    turn: 1,
-    date: "25-09-2021 23:00 PM",
-    staffAvatar: "",
-    menus: [{
-        imageUrl: "https://images.foody.vn/res/g25/244037/s120x120/bc4f48e2-87c8-4f73-8a40-e08c44ae-a14c4fc5-201126092828.jpeg",
-        name: "Combo thăn vai bò Mỹ",
-        price: 50000,
-        qty: 1
-    }],
-    items: 1,
-    total: 50000,
-    status: 0
-  }];
+import HistoryOrder from '../../components/order/order';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchAllTurn } from "../../store/thunk/thunk-history";
+import ShowMore from "../../components/order/show_more";
 
 const History = () => {
+
+    const {list_turn} = useSelector((state) => state.historyForm);
+    const dispatch = useDispatch();
+
+    const [turns, setTurns] = React.useState(list_turn);
+
+    React.useEffect(() => {
+        setTurns(list_turn);
+    }, [list_turn]);
+
     const refreshHistory = () => {
-        console.log("reload history order");
-      }
+        dispatch(fetchAllTurn());
+    }
+
     return (
         <div>
+            <ShowMore />
             <Grid container item lg={12}>
                 <Grid item lg={12} 
                 style={{margin: "0 25px", display: "flex", justifyContent: "space-between", padding: "5px 0"}}>
@@ -108,9 +36,9 @@ const History = () => {
             </Grid>
             <div className="history-order">
                 <Grid container spacing={3} item lg={12} >
-                {orders.map((order, index) => {
+                {turns && turns.map((turn, index) => {
                     return <Grid key={index} item lg={3}>
-                        <HistoryOrder order={order}/>
+                        <HistoryOrder order={turn}/>
                     </Grid>
                 })}
                 </Grid>
