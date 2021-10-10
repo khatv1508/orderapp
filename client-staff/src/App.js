@@ -13,24 +13,29 @@ import Account from './screens/account/account';
 import MenuManagement from './screens/menu/menu';
 import Table from './screens/table/table';
 import SnackBar from "./components/snack-bar/snack-bar";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { fetchAllTable, fetchAllTableDetail } from "./store/thunk/thunk-table";
 import { fetchAllMenu } from "./store/thunk/thunk-menu";
 import { fetchAllAccount } from "./store/thunk/thunk-account";
 import { fetchAllTurn } from "./store/thunk/thunk-history";
-
+import {
+  Redirect
+} from "react-router-dom";
 
 function App() {
   let match = useRouteMatch();
+  const account_login = useSelector((state) => state.accountForm.account_login);
   const dispatch = useDispatch();
 
   // load data 
   React.useEffect(() => {
-    dispatch(fetchAllTable());
+    if (account_login && account_login.role_id === 1) {
+      dispatch(fetchAllTable());
+      dispatch(fetchAllMenu());
+      dispatch(fetchAllAccount());
+    }
     dispatch(fetchAllTableDetail());
-    dispatch(fetchAllMenu());
-    dispatch(fetchAllAccount());
     // history
     dispatch(fetchAllTurn());
     // new order
@@ -39,7 +44,8 @@ function App() {
   }, []);
 
   return (
-    <div className="container">
+    <>
+      {account_login ? <div className="container">
       <div className="main-home" >
         <Menu />
         <SnackBar />
@@ -48,16 +54,16 @@ function App() {
           <div className="foreground">
             <Switch>
               <Route path={`${match.path}/history`}>
-                <History />
+                {account_login ? <History /> : <Redirect to="/login"/>}
               </Route>
               <Route path={`${match.path}/account`}>
-                <Account />
+                {account_login ? <Account /> : <Redirect to="/login"/>}
               </Route>
               <Route path={`${match.path}/menu`}>
-                <MenuManagement />
+                {account_login ? <MenuManagement /> : <Redirect to="/login"/>}
               </Route>
               <Route path={`${match.path}/table`}>
-                <Table />
+                {account_login ? <Table /> : <Redirect to="/login"/>}
               </Route>
               <Route path={match.path}>
                 <Home />
@@ -66,7 +72,10 @@ function App() {
           </div>
         </div>
       </div>
-    </div>
+    </div> 
+    : <Redirect to="/login"/>}
+    </>
+    
   );
 }
 

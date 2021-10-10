@@ -5,6 +5,7 @@ import {
     PUT_UPDATE_ACCOUNT,
     PUT_RESET_PASS_ACCOUNT,
     POST_CHECK_OLD_PASS,
+    POST_CHECK_LOGIN,
     DELETE_ACCOUNT
 } from "./thunk-config";
 import { accountFormSlice } from "../slices/account-form";
@@ -156,6 +157,35 @@ export const fetchDeleteAccount = (id) => async dispatch => {
             dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: result.message}));
         } else {
             dispatch(snackBarSlice.actions.setSnackBar({severity: "warning", message: "Can not delete account"}));
+        }
+    } catch (error) {
+        dispatch(snackBarSlice.actions.setSnackBar({severity: "error", message: "Fail! " + error}));
+    }
+}
+
+//  Check login account
+export const fetchCheckAccount = (account) => async dispatch => {
+    try {
+        // Check user name & password
+        let response = await fetch(API_URL.concat(POST_CHECK_LOGIN), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                account_name: account.account_name,
+                account_pass: account.account_pass
+            }),
+        });
+    
+        const result = await response.json();
+        if (result) {
+            // // save list account
+            dispatch(accountFormSlice.actions.setAccountLogin(result));
+            // show snack-bar
+            dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: result.message}));
+        } else {
+            dispatch(snackBarSlice.actions.setSnackBar({severity: "warning", message: "Can not login"}));
         }
     } catch (error) {
         dispatch(snackBarSlice.actions.setSnackBar({severity: "error", message: "Fail! " + error}));

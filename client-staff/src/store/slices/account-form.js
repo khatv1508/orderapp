@@ -5,6 +5,7 @@ export const accountFormSlice = createSlice({
     initialState: {
         account: undefined,
         list_account: undefined,
+        account_login: undefined,
         add_form: {
           open: 0,
           type: "add",
@@ -23,6 +24,12 @@ export const accountFormSlice = createSlice({
             return {
                 ...state,
                 list_account: action.payload
+            }
+        },
+        setAccountLogin: (state, action) => {
+            return {
+                ...state,
+                account_login: action.payload
             }
         },
         setAddForm: (state, action) => {

@@ -23,6 +23,9 @@ module.exports = app => {
 
     // Check old password Account with id
     router.post("/pass/:id", accountController.checkPass);
+
+    // Check login Account
+    router.post("/login", accountController.checkAccount);
   
     app.use('/api/account', router);
   };

@@ -19,6 +19,7 @@ const POST_ADD_ACCOUNT = "account/";
 const PUT_UPDATE_ACCOUNT = "account/:id";
 const PUT_RESET_PASS_ACCOUNT = "account/pass/:id";
 const POST_CHECK_OLD_PASS = "account/pass/:id";
+const POST_CHECK_LOGIN = "account/login";
 const DELETE_ACCOUNT = "account/:id";
 
 // Turn history
@@ -47,6 +48,7 @@ export {
     PUT_UPDATE_ACCOUNT,
     PUT_RESET_PASS_ACCOUNT,
     POST_CHECK_OLD_PASS,
+    POST_CHECK_LOGIN,
     DELETE_ACCOUNT,
 
     // Turn history

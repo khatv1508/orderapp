@@ -28,6 +28,7 @@ import {
   fetchAddAccount, 
   fetchUpdateAccount,
   fetchResetPassAccount,
+  fetchCheckAccount,
   fetchDeleteAccount 
 } from "./thunk/thunk-account";
 import { 
@@ -70,6 +71,7 @@ store.dispatch(fetchAllAccount);
 store.dispatch(fetchAddAccount);
 store.dispatch(fetchUpdateAccount);
 store.dispatch(fetchResetPassAccount);
+store.dispatch(fetchCheckAccount);
 store.dispatch(fetchDeleteAccount);
 
 // bill

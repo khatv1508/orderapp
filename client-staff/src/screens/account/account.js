@@ -21,7 +21,7 @@ import ResetPass from "./reset-pass-form";
 import DeleteAccount from "./delete-account";
 import { useSelector, useDispatch } from 'react-redux';
 import { accountFormSlice } from "../../store/slices/account-form";
-import { fetchAllAccount, } from "../../store/thunk/thunk-account";
+import { fetchAllAccount } from "../../store/thunk/thunk-account";
 
 function Account() {
   const {list_account} = useSelector((state) => state.accountForm);

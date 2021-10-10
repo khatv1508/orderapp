@@ -193,3 +193,37 @@ exports.checkPass = (req, res) => {
     });
   });
 };
+
+// Check user name Account
+exports.checkAccount = (req, res) => {
+  // const id = req.params.id;
+  const account_name = req.body.account_name;
+  const account_pass = req.body.account_pass;
+
+  Account.findAll({
+    where: {
+      [Op.and]: [
+        { account_name: { [Op.eq]: account_name }},
+        { account_pass: { [Op.eq]: account_pass }}
+      ]
+    } 
+  })
+  .then(data => {
+    if(data[0].account_name == account_name && data[0].account_pass == account_pass){
+      res.send({
+        id: data[0].id,
+        account_name: data[0].account_name,
+        role_id: data[0].role_id,
+      });
+    } else {
+      res.send({
+        message: `false`
+      });
+    }
+  })
+  .catch(err => {
+    res.status(500).send({
+      message: `Error retrieving Account with id=${id}`
+    });
+  });
+};

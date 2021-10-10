@@ -18,32 +18,38 @@ import { CgLogOut} from "react-icons/cg";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { menuSlice } from "../../store/slices/menu";
+import { accountFormSlice } from "../../store/slices/account-form";
 
 const menus = [{
     id: "home",
     label: "Home",
     url: "/app",
-    icon: <AiFillHome />
+    icon: <AiFillHome />,
+    role_id: undefined
 },{
     id: "history",
     label: "History",
     url: "/app/history",
-    icon: <RiHistoryFill />
+    icon: <RiHistoryFill />,
+    role_id: undefined
 },{
     id: "account",
     label: "Account",
     url: "/app/account",
-    icon: <RiAccountCircleLine />
+    icon: <RiAccountCircleLine />,
+    role_id: 1
 },{
     id: "menu",
     label: "Menu",
     url: "/app/menu",
-    icon: <MdRestaurantMenu />
+    icon: <MdRestaurantMenu />,
+    role_id: 1
 },{
     id: "table",
     label: "Table",
     url: "/app/table",
-    icon: <SiAirtable />
+    icon: <SiAirtable />,
+    role_id: 1
 }];
 
 const MenuItem = ({menu}) => {
@@ -78,6 +84,13 @@ const MenuItem = ({menu}) => {
 }
 
 const Menu = () => {
+    const account_login = useSelector((state) => state.accountForm.account_login);
+    const dispatch = useDispatch();
+
+    const handleLogout = () => {
+        dispatch(accountFormSlice.actions.setAccountLogin(undefined));
+    }
+
     return (
         <div className="menu">
             <div className="menu-top">
@@ -90,13 +103,16 @@ const Menu = () => {
                 
                 <List className="list">
                     {menus.map((menu) => {
+                        if (menu.role_id && menu.role_id !== account_login.role_id) {
+                            return <div key={menu.url}></div>
+                        }
                         return <MenuItem key={menu.url} menu={menu}/>
                     })}
                 </List>
             </div>
             
             <List className="list">
-                <ListItemButton>
+                <ListItemButton onClick={handleLogout}>
                     <ListItemIcon>
                         <CgLogOut />
                     </ListItemIcon>
