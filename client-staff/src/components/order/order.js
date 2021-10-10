@@ -15,6 +15,7 @@ import imageDefault from "../../assets/image/no-image.png";
 import { IoMdCheckmark } from "react-icons/io";
 import { historyFormSlice } from "../../store/slices/history-form";
 import { useDispatch } from "react-redux";
+import { fetchUpdateTurn } from "../../store/thunk/thunk-history";
 
 // Order item
 function Order ({order}) {
@@ -22,6 +23,10 @@ function Order ({order}) {
 
     const handleShowMoreClick = () => {
         dispatch(historyFormSlice.actions.setShowMore(order));
+    }
+
+    const handleConfirmm = () => {
+        dispatch(fetchUpdateTurn(order.id));
     }
 
     const getTotal = () => {
@@ -36,7 +41,7 @@ function Order ({order}) {
     const countItem = order.bill_details.length;
 
     return (
-        <Card key={order.turn} className="order-item">
+        <Card className="order-item">
             <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                 <div style={{width: "100%", padding: "0 10px"}}>
                     <h3 style={{marginBottom: 0}}>
@@ -75,7 +80,7 @@ function Order ({order}) {
                         </div>
                     </div>
                 }
-                return <></>;
+                return <div key={index}></div>;
             })}
             {countItem > 2 ? <Button onClick={handleShowMoreClick}>Show more...</Button> : <Button disabled>End</Button>}
           </CardContent>
@@ -96,7 +101,7 @@ function Order ({order}) {
                 >
                     Waitting...
                 </Button>
-                <IconButton style={{border: "3px solid #71cca3", color: "#71cca3", marginRight: "10px"}}>
+                <IconButton onClick={handleConfirmm} style={{border: "3px solid #71cca3", color: "#71cca3", marginRight: "10px"}}>
                     <IoMdCheckmark />
                 </IconButton>
             </Stack> : <div>

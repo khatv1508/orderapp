@@ -15,7 +15,7 @@ import Table from './screens/table/table';
 import SnackBar from "./components/snack-bar/snack-bar";
 import { useDispatch } from 'react-redux';
 
-import { fetchAllTable } from "./store/thunk/thunk-table";
+import { fetchAllTable, fetchAllTableDetail } from "./store/thunk/thunk-table";
 import { fetchAllMenu } from "./store/thunk/thunk-menu";
 import { fetchAllAccount } from "./store/thunk/thunk-account";
 import { fetchAllTurn } from "./store/thunk/thunk-history";
@@ -28,9 +28,13 @@ function App() {
   // load data 
   React.useEffect(() => {
     dispatch(fetchAllTable());
+    dispatch(fetchAllTableDetail());
     dispatch(fetchAllMenu());
     dispatch(fetchAllAccount());
+    // history
     dispatch(fetchAllTurn());
+    // new order
+    dispatch(fetchAllTurn(0));
     // eslint-disable-next-line
   }, []);
 

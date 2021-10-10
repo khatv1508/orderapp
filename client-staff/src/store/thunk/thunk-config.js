@@ -2,6 +2,7 @@ const API_URL = "http://localhost:8000/api/";
 
 //  Table
 const GET_ALL_TABLE = "table/";
+const GET_ALL_TABLE_DETAIL = "table/detail";
 const POST_ADD_TABLE = "table/";
 const DELETE_TABLE = "table/:id";
 
@@ -22,12 +23,14 @@ const DELETE_ACCOUNT = "account/:id";
 
 // Turn history
 const GET_ALL_TURN = "turn/";
+const PUT_UPDATE_TURN = "turn/:id";
 
 export {
     API_URL,
 
     // Table
     GET_ALL_TABLE,
+    GET_ALL_TABLE_DETAIL,
     POST_ADD_TABLE,
     DELETE_TABLE,
 
@@ -48,4 +51,5 @@ export {
 
     // Turn history
     GET_ALL_TURN,
+    PUT_UPDATE_TURN,
 }

@@ -5,6 +5,7 @@ export const historyFormSlice = createSlice({
     initialState: {
         turn: undefined,
         list_turn: undefined,
+        list_new_order: undefined,
         show_more: undefined,
     },
     reducers: {
@@ -18,6 +19,12 @@ export const historyFormSlice = createSlice({
             return {
                 ...state,
                 list_turn: action.payload,
+            }
+        },
+        setListNewOrder: (state, action) => {
+            return {
+                ...state,
+                list_new_order: action.payload,
             }
         },
         setShowMore: (state, action) => {

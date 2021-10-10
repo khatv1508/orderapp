@@ -5,6 +5,7 @@ export const tableFormSlice = createSlice({
     initialState: {
         table: undefined,
         list_table: undefined,
+        list_table_detail: undefined,
         add_table: 0,
         delete_table: 0
     },
@@ -19,6 +20,12 @@ export const tableFormSlice = createSlice({
             return {
                 ...state,
                 list_table: action.payload
+            }
+        },
+        setListTableDetail: (state, action) => {
+            return {
+                ...state,
+                list_table_detail: action.payload
             }
         },
         setAddTable: (state, action) => {

@@ -8,6 +8,9 @@ module.exports = app => {
   
     // Retrieve all Table
     router.get("/", tableController.findAll);
+
+    // Retrieve all Table details with bill, turn ...
+    router.get("/detail", tableController.findAllDetail);
   
     // Delete a Table with id
     router.delete("/:id", tableController.delete);

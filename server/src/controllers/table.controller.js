@@ -1,5 +1,10 @@
 const db = require("../models");
-const { Table } = db;
+const { 
+  Table,
+  Bill,
+  Turn,
+  BillDetail
+ } = db;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Table
@@ -30,18 +35,74 @@ exports.create = (req, res) => {
     });
 };
 
+const parseTurn = (turns) => {
+  let dataReturn = [];
+
+  turns && turns.forEach((item) => {
+    // tinh total 
+    let total = 0;
+    item.bill_details && item.bill_details.length > 0 && item.bill_details.forEach(detail => {
+      total += detail.amount;
+    });
+
+    //  tra ve doi tuong
+    dataReturn.push({
+      items: item.bill_details.length,
+      total: total
+    })
+  })
+
+  return dataReturn;
+}
+
+//  
+const parseData = (data) => {
+  let dataReturn = [];
+
+  data.forEach(element => {
+    let tempData = {
+      number: element.table_number,
+      turns: element.bills && element.bills.length > 0 ? parseTurn(element.bills[0].turns) : null,
+      status: element.bills && element.bills.length > 0 ? 1 : 0 
+    }
+    dataReturn.push(tempData);
+  });
+
+  return dataReturn;
+}
+
 // Retrieve all Table from the database.
-exports.findAll = (req, res) => {
-    const table_number = req.query.table_number;
-    var condition = table_number 
-    ? { table_number: { [Op.eq]: `%${table_number}%` } } 
+exports.findAllDetail = (req, res) => {
+    const pay_status = req.query.pay_status;
+    var condition = pay_status 
+    ? { 
+      [Op.or]: [
+        { pay_status: { [Op.eq]: pay_status }},
+        { pay_status: { [Op.eq]: null }}
+      ]
+    } 
     : null;
 
-    Table.findAll({ 
-      where: condition
+    Table.findAll({
+      order: [['table_number', 'ASC']],
+      include: [{
+        model: Bill,
+        as: 'bills',
+        required : false,
+        where: condition,
+        include: {
+          model: Turn,
+          as: 'turns',
+          include: {
+            model: BillDetail,
+            as: 'bill_details'
+          }
+        }
+      }]
     })
     .then(data => {
-      res.send(data);
+      // parse data 
+      res.send(parseData(data));
     })
     .catch(err => {
       res.status(500).send({
@@ -49,6 +110,27 @@ exports.findAll = (req, res) => {
           err.message || "Some error occurred while retrieving Table."
       });
     });
+};
+
+// Retrieve all Table from the database.
+exports.findAll = (req, res) => {
+  const table_number = req.query.table_number;
+  var condition = table_number 
+  ? { 
+    table_number: { [Op.eq]: `%${table_number}%` }
+  } 
+  : null;
+
+  Table.findAll({where: condition})
+  .then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving Table."
+    });
+  });
 };
 
 // Delete a Table with the specified id in the request

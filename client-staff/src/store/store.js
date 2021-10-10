@@ -12,6 +12,7 @@ import { historyFormSlice } from './slices/history-form';
 // import thunk
 import { 
   fetchAllTable, 
+  fetchAllTableDetail,
   fetchAddTable, 
   fetchDeleteTable 
 } from "./thunk/thunk-table";
@@ -30,7 +31,8 @@ import {
   fetchDeleteAccount 
 } from "./thunk/thunk-account";
 import { 
-  fetchAllTurn,  
+  fetchAllTurn,
+  fetchUpdateTurn
 } from "./thunk/thunk-history";
 
 const reducer = combineReducers({
@@ -52,6 +54,7 @@ export const store = createStore(
 // dispatch thunk
 // table
 store.dispatch(fetchAllTable);
+store.dispatch(fetchAllTableDetail);
 store.dispatch(fetchAddTable);
 store.dispatch(fetchDeleteTable);
 
@@ -71,3 +74,4 @@ store.dispatch(fetchDeleteAccount);
 
 // bill
 store.dispatch(fetchAllTurn);
+store.dispatch(fetchUpdateTurn);
