@@ -2,7 +2,7 @@ import React from "react";
 import "./menu.css";
 import logo from "../../assets/image/logo.png"
 import user from "../../assets/image/user.png";
-// import staff from "../../assets/image/staff.png";
+import staff from "../../assets/image/staff.png";
 import {
     List,
     ListItemButton,
@@ -96,9 +96,21 @@ const Menu = () => {
             <div className="menu-top">
                 <img className="menu-logo" src={logo} alt="logo"/>
                 <div className="menu-avatar">
-                    <Avatar className="avatar" alt="" src={user} />
-                    <p>Hello, Admin</p>
-                    {/* <Avatar className="avatar" alt="" src={staff} /> */}
+                    {account_login.role_id === 1 
+                    ? <div style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center"}}>
+                        <Avatar className="avatar" alt="" src={user} />
+                        <p>Hello, Admin</p>
+                    </div> 
+                    : <div style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center"}}>
+                        <Avatar className="avatar" alt="" src={staff} />
+                        <p>Hello, Staff</p>
+                    </div>}
                 </div>
                 
                 <List className="list">
