@@ -8,26 +8,41 @@ import {
 import {
     Button,
     Dialog,
-    Paragraph,
     Provider,
     RadioButton,
-    TextInput 
+    TextInput,
+    Subheading
 } from 'react-native-paper';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { settingSlice} from "../store/slices/slice-setting";
+import { fetchAllTable } from "../store/thunk/thunk-setting";
 
 function Setting () {
     const [visible, setVisible] = React.useState(false);
 
-    const showDialog = () => {setVisible(true);}
+    const showDialog = () => {
+        setVisible(true);
+        dispatch(fetchAllTable());
+    }
 
     const hideDialog = () => {
         setVisible(false);
         setText(undefined);
+        dispatch(settingSlice.actions.setTable(undefined));
     };
 
     const [checked, setChecked] = React.useState(1);
 
     const [text, setText] = React.useState(undefined);
+
+    const {list_table} = useSelector((state) => state.setting);
+    const dispatch = useDispatch();
+
+    const [tables, setTables] = React.useState(list_table);
+
+    React.useEffect(() => {
+        setTables(list_table);
+    }, [list_table]);
     
     return (
         <Provider>
@@ -45,24 +60,24 @@ function Setting () {
                 <Dialog visible={visible} onDismiss={hideDialog}>
                     <Dialog.Content>
                         <TextInput
-                            label="AdminPass"
+                            label="Admin Pass"
                             value={text}
                             onChangeText={text => setText(text)}
                             secureTextEntry
+                            style={styles.text_input}
                         />
-                        <Paragraph>Choose an option</Paragraph>
-                        <RadioButton.Group 
-                            onValueChange={value => setChecked(value)} 
-                            value={checked} 
-                            >
-                            <RadioButton.Item label="First item" value={1} />
-                            <RadioButton.Item label="Second item" value={2} />
-                            <RadioButton.Item label="First item" value={3} />
-                            <RadioButton.Item label="Second item" value={4} />
-                            <RadioButton.Item label="First item" value={5} />
-                            <RadioButton.Item label="Second item" value={6} />
-                        </RadioButton.Group>
-                        
+                        <Subheading>Choose an option</Subheading>
+                        {tables && tables.map((table, index) => {
+                            return (
+                                <RadioButton.Group 
+                                    onValueChange={value => setChecked(value)} 
+                                    value={checked} 
+                                    key={index}
+                                    >
+                                    <RadioButton.Item label={`Table ${table.table_number}`} value={table.table_id} />
+                                </RadioButton.Group>
+                            )
+                        })} 
                     </Dialog.Content>
                     <Dialog.Actions>
                         <Button style={styles.button_dialog} mode="contained" onPress={hideDialog} disabled={text === undefined}>
@@ -95,12 +110,6 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
     },
-    text_radio: {
-        fontSize: 20,
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center"
-    },
     image: {
         width: 300,
         height: 300,
@@ -121,6 +130,9 @@ const styles = StyleSheet.create({
     },
     dialog: {
         position: "absolute"
+    },
+    text_input: {
+        marginBottom: 20
     }
 });
 

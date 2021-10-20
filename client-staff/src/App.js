@@ -19,9 +19,7 @@ import { fetchAllTable, fetchAllTableDetail } from "./store/thunk/thunk-table";
 import { fetchAllMenu } from "./store/thunk/thunk-menu";
 import { fetchAllAccount } from "./store/thunk/thunk-account";
 import { fetchAllTurn } from "./store/thunk/thunk-history";
-import {
-  Redirect
-} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 function App() {
   let match = useRouteMatch();

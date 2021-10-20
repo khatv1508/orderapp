@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const menuFormSlice = createSlice({
-    name: 'account-form',
+    name: 'menu-form',
     initialState: {
         menu: undefined,
         add_menu: {
