@@ -62,21 +62,26 @@ const getPagingData = (data, page, limit) => {
 
 // Retrieve all Menu from the database.
 exports.findAll = (req, res) => {
-    const { page, size, food_name } = req.query;
+    const { isNotPagination, page, size, food_name } = req.query;
     var condition = food_name 
     ? { food_name: { [Op.like]: `%${food_name}%` } } 
     : null;
 
     const { limit, offset } = getPagination(page, size);
 
-    Menu.findAndCountAll({ 
+    const option = isNotPagination ? { 
+      where: condition, 
+      include: ["type"]
+    } : { 
       where: condition, 
       limit, 
       offset,
       include: ["type"]
-    })
+    }; 
+
+    Menu.findAndCountAll(option)
     .then(data => {
-      const response = getPagingData(data, page, limit);
+      const response = isNotPagination ? data : getPagingData(data, page, limit);
       res.send(response);
     })
     .catch(err => {

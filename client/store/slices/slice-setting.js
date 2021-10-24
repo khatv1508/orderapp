@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const settingSlice = createSlice({
     name: 'setting',
     initialState: {
-        table: undefined,
+        table: 1,
         list_table: undefined,
     },
     reducers: {

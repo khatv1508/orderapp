@@ -8,6 +8,8 @@ import { Ionicons } from 'react-native-vector-icons';
 import MyTheme from "./theme/myTheme";
 import { store } from './store/store';
 import { Provider } from 'react-redux';
+import MySnackBar from "./component/snack-bar/snack-bar";
+import { View } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,25 +21,48 @@ export default function App() {
           screenOptions={({ route }) => ({
             tabBarIcon: ({ color, size }) => {
               const icons = {
-                "Trang chủ": 'home',
-                "Thực đơn": 'ios-fast-food',
-                "Cài đặt": 'ios-settings'
+                "Home": 'home',
+                "Menu": 'ios-fast-food',
+                "Setting": 'ios-settings'
               };
+
+              // const getTitleByRouteName = () => {
+              //   switch (route.name){
+              //     case "Home": return "Trang chủ";
+              //     case "Menu": return "Thực đơn";
+              //     case "Setting": return "Cài đặt";
+              //   }
+              // }
         
               return (
-                <Ionicons
-                  name={icons[route.name]}
-                  color={color}
-                  size={size}
-                />
+                <View>
+                  <Ionicons
+                    name={icons[route.name]}
+                    color={color}
+                    size={size}
+                  />
+                </View>
               );
             },
           })}
         >
-          <Tab.Screen name="Trang chủ" component={HomeScreen} />
-          <Tab.Screen name="Thực đơn" component={MenuScreen} />
-          <Tab.Screen name="Cài đặt" component={SettingScreen}/>
+          <Tab.Screen name="Home"  component={HomeScreen} 
+            options={{
+              title: 'Trang chủ'
+            }}
+          />
+          <Tab.Screen name="Menu" component={MenuScreen} 
+            options={{
+              title: 'Thực đơn'
+            }}
+          />
+          <Tab.Screen name="Setting" component={SettingScreen}
+            options={{
+              title: 'Cài đặt'
+            }}
+          />
         </Tab.Navigator>
+        <MySnackBar />
       </NavigationContainer>
     </Provider>
     

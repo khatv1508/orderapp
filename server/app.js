@@ -38,6 +38,9 @@ require("./src/routes/bill.route")(app);
 // turn route
 require("./src/routes/turn.route")(app);
 
+// food type route
+require("./src/routes/food_type.route")(app);
+
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

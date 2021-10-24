@@ -3,6 +3,7 @@ import {
     GET_ALL_TABLE,
 } from "./thunk-config";
 import { settingSlice } from "../slices/slice-setting";
+import { snackBarSlice } from "../slices/slice-snack-bar";
 
 //  Get all table
 export const fetchAllTable = () => async dispatch => {
@@ -18,8 +19,12 @@ export const fetchAllTable = () => async dispatch => {
         if (result) {
             // save list table
             dispatch(settingSlice.actions.setListTable(result));
+            // show snack-bar
+            dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Get all table success!"}));
+        } else {
+            dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not get result"}));
         }
     } catch (error) {
-        dispatch(snackBarSlice.actions.setSnackBar({severity: "error", message: "Fail! " + error}));
+        dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail! " + error}));
     }
 }

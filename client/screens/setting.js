@@ -28,14 +28,18 @@ function Setting () {
     const hideDialog = () => {
         setVisible(false);
         setText(undefined);
-        dispatch(settingSlice.actions.setTable(undefined));
+    };
+
+    const onApply = () => {
+        dispatch(settingSlice.actions.setTable(checked));
+        hideDialog();
     };
 
     const [checked, setChecked] = React.useState(1);
 
     const [text, setText] = React.useState(undefined);
 
-    const {list_table} = useSelector((state) => state.setting);
+    const {list_table, table} = useSelector((state) => state.setting);
     const dispatch = useDispatch();
 
     const [tables, setTables] = React.useState(list_table);
@@ -51,9 +55,7 @@ function Setting () {
                     source={require('../assets/image/deviceMobile.png')} 
                     style={styles.image}
                 />
-                <Text style={styles.text}>
-                    <Text>Thiết bị này là bàn 1</Text>
-                </Text>
+                <Text style={styles.text}>Thiết bị này là bàn {table}</Text>
                 <Button style={styles.button} mode="contained" onPress={showDialog}>
                     Chỉnh sửa 
                 </Button>
@@ -80,7 +82,7 @@ function Setting () {
                         })} 
                     </Dialog.Content>
                     <Dialog.Actions>
-                        <Button style={styles.button_dialog} mode="contained" onPress={hideDialog} disabled={text === undefined}>
+                        <Button style={styles.button_dialog} mode="contained" onPress={onApply} disabled={text === undefined}>
                             Apply
                         </Button>
                         <Button style={styles.button_dialog} mode="contained" onPress={hideDialog}>

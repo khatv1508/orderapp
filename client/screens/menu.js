@@ -6,71 +6,54 @@ import {
     Image,
     FlatList,
     SafeAreaView,
-    TouchableOpacity
 } from 'react-native';
 import {
     Button,
-    Searchbar ,
     Text,
     FAB,
     Card,
-    Subheading,
     IconButton,
-    Badge
+    Badge,
+    Title,
+    ActivityIndicator,
+    Colors
 } from 'react-native-paper';
-import HomeScreen from "./home";
 
-const DATA = [
-    {
-        id: 1,
-        title: "First Item",
-    },
-    {
-        id: 2,
-        title: "Second Item",
-    },
-    {
-        id: 3,
-        title: "Third Item",
-    },
-    {
-        id: 4,
-        title: "Third Item",
-    },
-    {
-        id: 5,
-        title: "Third Item",
-    },
-    {
-        id: 6,
-        title: "Third Item",
-    },
-  ];
-
-const foodType = [{
-    type_id: 1,
-    type_name: "Combo",
-    image: "../assets/image/combo.png"
-  },
-  {
-    type_id: 2,
-    type_name: "Combo2",
-    image: "../assets/image/combo.png"
-  },
-  {
-    type_id: 3,
-    type_name: "Combo3",
-    image: "../assets/image/combo.png"
-  },
-  {
-    type_id: 4,
-    type_name: "Combo4",
-    image: "../assets/image/combo.png"
-  },
-];
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchAllMenu, fetchAllMenuByType } from "../store/thunk/thunk-menu";
+import { fetchAllFoodType } from "../store/thunk/thunk-food-type";
+import { menuSlice } from '../store/slices/slice-menu';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => {
-    const [quantity, setQuantity] = React.useState(0);
+    const { list_order } = useSelector((state) => state.menu);
+    
+    const [tmpOrder, setTmpOrder] = React.useState(list_order);
+    // let tmpOrder = list_order;
+    const [quantity, setQuantity] = React.useState(tmpOrder && tmpOrder.hasOwnProperty(item.id)
+        ? tmpOrder[item.id] : 0);
+    const dispatch = useDispatch();
+
+    console.log("item", item.id, list_order);
+
+    React.useEffect(() => {
+        if (quantity > 0) {
+            // them 
+            dispatch(menuSlice.actions.setListOrder({
+                ...list_order, 
+                [item.id]: quantity
+            }));
+        } else {
+            // xoa
+            if (tmpOrder && tmpOrder.hasOwnProperty(item.id)) {
+                dispatch(menuSlice.actions.setListOrder(delete list_order[item.id]));
+            }
+        }
+    }, [quantity]);
+
+    React.useEffect(() => {
+        list_order && setTmpOrder(list_order);
+    }, [list_order]);
+
     return (
         <Card item={item}
         onPress={onPress}
@@ -78,18 +61,16 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => {
         textColor={{ textColor }}
         style={styles.card}
         >
+            <Card.Cover source={{ uri: `${item.image}` }}/>
             <View style={styles.card_content}>
-                <Image 
-                    source={require('../assets/image/combo.png')} 
-                    style={styles.image_content}
-                />
                 <View style={styles.text_content}>
-                    <Subheading>Dẻ sườn heo Iberico sốt Miso</Subheading>
-                    <Text>Giá: 100.000đ</Text>
+                    <Title>{item.food_name}</Title>
+                    <Text>Giá: {item.price} đ</Text>
                     <View style={styles.button_content}>
                         <IconButton 
                             icon="minus-circle-outline" 
                             size={35}
+                            color={Colors.red500}
                             style={styles.button_plus_minus}
                             onPress={() => {
                                 quantity > 0 && setQuantity(quantity - 1);
@@ -99,6 +80,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => {
                         <IconButton 
                             icon="plus-circle-outline" 
                             size={35}
+                            color={Colors.red500}
                             style={styles.button_plus_minus}
                             onPress={() => {
                                 setQuantity(quantity + 1);
@@ -111,22 +93,50 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => {
     );
 }
 
-function Menu () {
-    const [searchQuery, setSearchQuery] = React.useState('');
+function Menu ({ navigation }) {
 
-    const onChangeSearch = query => setSearchQuery(query);
+    const [ selectedId, setSelectedId ] = React.useState(null);
 
-    const [selectedId, setSelectedId] = React.useState(null);
+    const [ selectedType, setSelectedType ] = React.useState(3);
 
-    const [selectedType, setSelectedType] = React.useState(null);
+    const { list_menu, list_order } = useSelector((state) => state.menu);
+    const { list_food_type } = useSelector((state) => state.foodType);
 
-    
+    const [foodTypes, setFoodTypes] = React.useState(list_food_type);
+    const [menus, setMenus] = React.useState(list_menu);
+    const [loading, setLoading] = React.useState(true);
+
+    const [orderCount, setOrderCount] = React.useState(list_order ? Object.keys(list_order).length : 0);
+
+
+    const dispatch = useDispatch();
+    React.useEffect(() => {
+        dispatch(fetchAllFoodType());
+        if (selectedType > 0) {
+            dispatch(fetchAllMenuByType(selectedType));
+        } else {
+            dispatch(fetchAllMenu());
+        }
+    }, []);
+
+    React.useEffect(()=> {
+        setMenus(list_menu);
+        setLoading(false);
+    }, [list_menu]);
+
+    React.useEffect(()=> {
+        setFoodTypes(list_food_type);
+        setLoading(false);
+    }, [list_food_type]);
+
+    React.useEffect(() => {
+        // console.log("menu", list_order && Object.keys(list_order).length);
+        list_order && setOrderCount(Object.keys(list_order).length);
+    }, [list_order]);
 
     const renderItem = ({ item }) => {
         const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
         const color = item.id === selectedId ? 'white' : 'black';
-        
-    
         return (
             <Item
                 item={item}
@@ -138,89 +148,51 @@ function Menu () {
     };
 
     return (
-        <View style={styles.container}>  
-            <Searchbar
-                placeholder="Search"
-                onChangeText={onChangeSearch}
-                value={searchQuery}
-                style={styles.search}
-            />
+        <View style={styles.container}>
             <View style={{ flex: 1 }}> 
                 <ScrollView horizontal={true} style={styles.scroll}>
-                    {foodType.map((item, index) => {
-                        return <Button key={index} mode="outlined" onPress={() => setSelectedType(item.type_id)} 
-                        style={item.type_id === selectedType ? styles.button_active : styles.button}
+                    <Button mode="outlined" onPress={() => {
+                        setSelectedType(0);
+                        dispatch(fetchAllMenu());
+                    }}
+                        style={selectedType === 0 ? styles.button_active : styles.button}
                         icon={() => (
                             <Image 
-                                source={require('../assets/image/combo.png')} 
+                                source={require('../assets/image/all.png')} 
                                 style={styles.image}
                             />
                         )}>
-                        <Text style={styles.text}>{item.type_name}</Text>
+                        <Text style={styles.text}>All</Text>
                     </Button>
+                    {foodTypes && foodTypes.map((item, index) => {
+                        return <Button key={index} mode="outlined" 
+                            onPress={() => {
+                                setSelectedType(item.type_id);
+                                dispatch(fetchAllMenuByType(item.type_id));
+                            }}
+                            style={item.type_id === selectedType ? styles.button_active : styles.button}
+                            icon={() => (
+                                <Image 
+                                    source={{ uri: item.type_image }} 
+                                    style={styles.image}
+                                />
+                            )}>
+                            <Text style={styles.text}>{item.type_name}</Text>
+                        </Button>
                     })}
-                    
-                    {/* <Button mode="outlined" onPress={() => console.log('btn')} 
-                        style={styles.button}
-                        icon={() => (
-                            <Image 
-                                source={require('../assets/image/meat.png')} 
-                                style={styles.image}
-                            />
-                        )}>
-                        <Text style={styles.text}>Thịt</Text>
-                    </Button>
-                    <Button mode="outlined" onPress={() => console.log('btn')} 
-                        style={styles.button}
-                        icon={() => (
-                            <Image 
-                                source={require('../assets/image/crawfish.png')} 
-                                style={styles.image}
-                            />
-                        )}>
-                        <Text style={styles.text}>Hải sản</Text>
-                    </Button>
-                    <Button mode="outlined" onPress={() => console.log('btn')} 
-                        style={styles.button}
-                        icon={() => (
-                            <Image 
-                                source={require('../assets/image/hot-pot.png')} 
-                                style={styles.image}
-                            />
-                        )}>
-                        <Text style={styles.text}>Lẩu</Text>
-                    </Button>
-                    <Button mode="outlined" onPress={() => console.log('btn')} 
-                        style={styles.button}
-                        icon={() => (
-                            <Image 
-                                source={require('../assets/image/bowl-salad.png')} 
-                                style={styles.image}
-                            />
-                        )}>
-                        <Text style={styles.text}>Đồ ăn kèm</Text>
-                    </Button>
-                    <Button mode="outlined" onPress={() => console.log('btn')} 
-                        style={styles.button}
-                        icon={() => (
-                            <Image 
-                                source={require('../assets/image/drink-icon.png')} 
-                                style={styles.image}
-                            />
-                        )}>
-                        <Text style={styles.text}>Nước uống</Text>
-                    </Button> */}
                 </ScrollView>
             </View>
-            <View style={{ flex: 9 }}> 
+            <View style={{ flex: 9, justifyContent: "center" }}>
+            {loading ? <ActivityIndicator animating={true}/> : 
                 <SafeAreaView style={styles.area_view}>
                     <FlatList
-                        data={DATA}
+                        data={menus}
                         renderItem={renderItem}
                         keyExtractor={(item) => String(item.id)}
                         extraData={selectedId}
                     />
                 </SafeAreaView>
+            }
                 
                 <FAB
                     style={styles.fab}
@@ -230,11 +202,11 @@ function Menu () {
                                 source={require('../assets/image/bill.png')} 
                                 style={styles.image_fab}
                             />
-                             <Badge style={styles.badge}>3</Badge>
+                             <Badge style={styles.badge}>{orderCount}</Badge>
                         </View>
                         
                     )}
-                    onPress={() => console.log('page home')}
+                    onPress={() => navigation.navigate("Home")}
                 />
             </View>
         </View>
@@ -268,8 +240,11 @@ const styles = StyleSheet.create({
         margin: 5,
         height: 40
     },
+    scroll: {
+        marginTop: 10
+    },
     area_view: {
-        marginTop: 20
+        marginTop: 15
     },
     fab: {
         position: 'absolute',
@@ -285,25 +260,29 @@ const styles = StyleSheet.create({
         marginLeft: -12,
     },
     card: {
-        marginBottom: 30
+        marginBottom: 30,
+        marginLeft: 20,
+        marginRight: 20,
     },  
     card_content: {
         display: "flex",
-        flexDirection: "row",
+        // flexDirection: "row",
         alignItems: "center",
         paddingLeft: 5,
         paddingRight: 5,
+        marginTop: 20,
     },
     image_content: {
-        width: 120,
-        height: 120,
+        width: 200,
+        height: 200,
         marginTop: 20,
         marginBottom: 30,
     },
     text_content: {
         paddingLeft: 5,
         display: "flex",
-        flexDirection: "column"
+        flexDirection: "column",
+        alignItems: 'center'
     },
     button_content: {
         display: "flex",
@@ -314,6 +293,7 @@ const styles = StyleSheet.create({
     },
     button_plus_minus: {
         marginRight: 10,
+        color: "tomato"
     },
     badge: {
         position: "absolute",

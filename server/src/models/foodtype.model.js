@@ -8,6 +8,9 @@ module.exports = (sequelize, Sequelize) => {
     type_name: {
       type: Sequelize.STRING
     },
+    type_image: {
+      type: Sequelize.STRING
+    }
   }, { sequelize, modelName: 'food_types', timestamps: false, underscored: true });
   return FoodType;
 };

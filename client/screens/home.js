@@ -10,7 +10,7 @@ import {
     Provider,
 } from 'react-native-paper';
 
-function Home () {
+function Home ({ navigation }) {
     return (
         <Provider>
             <View style={styles.container}>
@@ -21,7 +21,10 @@ function Home () {
                 <Text style={styles.text}>
                     <Text>Chưa có hóa đơn</Text>
                 </Text>
-                <Button style={styles.button} mode="contained" onPress={() => console.log('btn')}>
+                
+                <Button style={styles.button} mode="contained" 
+                    onPress={() => navigation.navigate("Menu")}
+                >
                     Thêm hóa đơn 
                 </Button>
             </View>
