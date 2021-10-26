@@ -29,7 +29,6 @@ function Home ({ navigation }) {
                 </Button>
             </View>
         </Provider>
-        
     );
 }
 

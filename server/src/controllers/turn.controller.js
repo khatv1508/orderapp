@@ -1,3 +1,4 @@
+const { Bill } = require("../models");
 const db = require("../models");
 const { 
   Turn,
@@ -129,5 +130,90 @@ exports.update = (req, res) => {
       message: `Error updating Turn with id=${id}`
     });
   });
+};
+
+// Retrieve all Turn by id table
+exports.findAllByIdTable = (req, res) => {
+  const table_id = req.params.table_id;
+
+  var condition = table_id 
+  ? { 
+    [Op.and]: [{ table_id: { [Op.eq]: table_id } }, { pay_status: { [Op.eq]: 0 } }],
+  } 
+  : null;
+
+  // A = Find bill where table id = {} and pay_status = 0
+  Bill.findOne({
+    where: condition
+  })
+  .then((bill) => {
+    // Find all turn where bill id = A.bill_id
+    Turn.findAll({
+      order: [['num', 'ASC']], 
+      include: [{
+        model: Bill,
+        as: 'bill',
+        where: {
+          id: { [Op.eq]: bill.id }
+        }
+      }, {
+        model: BillDetail,
+        as: 'bill_details', 
+        include: {
+          model: Menu,
+          as: 'menu'
+        }
+      }]
+    })
+    .then(data => {
+      // Parse data
+      let result = {};
+      if (data) {
+        // Lay thong tin bill
+        if (data.length > 1) {
+          result = {
+            bill: data[0].bill
+          };
+        }
+        result = {
+          ... result, 
+          turns: data.map((obj, index) => {
+          let turnTotal = 0;
+          let turnId = 0;
+          let arrBillDetails = obj.bill_details && obj.bill_details.map((detail, index) => {
+            turnTotal += detail.amount;
+            turnId = detail.id;
+            return {
+              menu_id: detail.menu.id,
+              qty: detail.quantity,
+              amount: detail.menu.price * detail.quantity,
+              food_name: detail.menu.food_name,
+              image: detail.menu.image,
+              price: detail.menu.price,
+            }
+          });
+          return {
+            id: turnId,
+            arr: arrBillDetails,
+            total: turnTotal
+          }
+        })
+      }
+        res.send(result);
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Turn."
+      });
+    });
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving Turn."
+    });
+  });;
 };
 

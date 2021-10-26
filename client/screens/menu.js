@@ -10,10 +10,8 @@ import {
 import {
     Button,
     Text,
-    FAB,
     Card,
     IconButton,
-    Badge,
     Title,
     ActivityIndicator,
     Colors
@@ -23,49 +21,83 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchAllMenu, fetchAllMenuByType } from "../store/thunk/thunk-menu";
 import { fetchAllFoodType } from "../store/thunk/thunk-food-type";
 import { menuSlice } from '../store/slices/slice-menu';
+import { currencyFormat } from "../component/fomat";
 
-const Item = ({ item, onPress, backgroundColor, textColor }) => {
+const Item = ({ item, onPress}) => {
     const { list_order } = useSelector((state) => state.menu);
-    
-    const [tmpOrder, setTmpOrder] = React.useState(list_order);
-    // let tmpOrder = list_order;
-    const [quantity, setQuantity] = React.useState(tmpOrder && tmpOrder.hasOwnProperty(item.id)
-        ? tmpOrder[item.id] : 0);
+    const [tmpOrder, setTmpOrder] = React.useState(list_order ? list_order.arr : []);
+
+    const checkIdExist = () => {
+        if (tmpOrder) {
+            let tmpElement = tmpOrder.filter(obj => obj.menu_id === item.id)[0];
+            return tmpElement ? tmpElement.qty : 0;
+        } else {
+            return 0;
+        }
+    }
+    const [quantity, setQuantity] = React.useState(checkIdExist());
     const dispatch = useDispatch();
 
-    console.log("item", item.id, list_order);
-
     React.useEffect(() => {
-        if (quantity > 0) {
-            // them 
-            dispatch(menuSlice.actions.setListOrder({
-                ...list_order, 
-                [item.id]: quantity
-            }));
+        if (quantity !== 0) {
+            let tmpElement = tmpOrder.filter(obj => obj.menu_id === item.id)[0];
+            if (quantity === 1 && !tmpElement) {
+                // them
+                setTmpOrder([
+                    ...tmpOrder,
+                    {
+                        menu_id: item.id,
+                        qty: quantity,
+                        amount: item.price * quantity,
+                        food_name: item.food_name,
+                        image: item.image,
+                        price: item.price,
+                    }
+                ]);
+            } else {
+                // update 
+                setTmpOrder(tmpOrder.map((obj) => {
+                    if (obj.menu_id === item.id) {
+                        return {
+                            ...obj, 
+                            qty: quantity
+                        }   
+                    } else {
+                        return obj;
+                    }
+                }));
+            }
         } else {
             // xoa
-            if (tmpOrder && tmpOrder.hasOwnProperty(item.id)) {
-                dispatch(menuSlice.actions.setListOrder(delete list_order[item.id]));
+            if (tmpOrder && checkIdExist() !== 0) {
+                setTmpOrder(tmpOrder.filter(obj => obj.menu_id !== item.id));
             }
         }
     }, [quantity]);
 
     React.useEffect(() => {
-        list_order && setTmpOrder(list_order);
+        list_order && setTmpOrder(list_order.arr);
     }, [list_order]);
 
+    React.useEffect(() => {
+        let tmpTotal = 0;
+        tmpOrder.forEach((obj) => {
+            tmpTotal += obj.amount;
+        });
+        dispatch(menuSlice.actions.setListOrder({
+            id: 0,
+            arr: tmpOrder,
+            total: tmpTotal
+        }));
+    }, [tmpOrder]);
+
     return (
-        <Card item={item}
-        onPress={onPress}
-        backgroundColor={{ backgroundColor }}
-        textColor={{ textColor }}
-        style={styles.card}
-        >
+        <Card item={item} onPress={onPress} style={[styles.card, quantity > 0 ? styles.card_active : ""]}>
             <Card.Cover source={{ uri: `${item.image}` }}/>
             <View style={styles.card_content}>
                 <View style={styles.text_content}>
                     <Title>{item.food_name}</Title>
-                    <Text>Giá: {item.price} đ</Text>
+                    <Text>Đơn giá: {currencyFormat(item.price)}</Text>
                     <View style={styles.button_content}>
                         <IconButton 
                             icon="minus-circle-outline" 
@@ -94,30 +126,32 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => {
 }
 
 function Menu ({ navigation }) {
-
     const [ selectedId, setSelectedId ] = React.useState(null);
 
     const [ selectedType, setSelectedType ] = React.useState(3);
 
-    const { list_menu, list_order } = useSelector((state) => state.menu);
+    const { list_all_menu, list_menu, list_order } = useSelector((state) => state.menu);
     const { list_food_type } = useSelector((state) => state.foodType);
 
     const [foodTypes, setFoodTypes] = React.useState(list_food_type);
     const [menus, setMenus] = React.useState(list_menu);
     const [loading, setLoading] = React.useState(true);
 
-    const [orderCount, setOrderCount] = React.useState(list_order ? Object.keys(list_order).length : 0);
-
-
     const dispatch = useDispatch();
+
     React.useEffect(() => {
+        dispatch(fetchAllMenu());
         dispatch(fetchAllFoodType());
         if (selectedType > 0) {
             dispatch(fetchAllMenuByType(selectedType));
-        } else {
-            dispatch(fetchAllMenu());
         }
     }, []);
+
+    React.useEffect(()=> {
+        if (selectedType === 0) {
+            dispatch(menuSlice.actions.setListMenu(list_all_menu));
+        }
+    }, [list_all_menu]);
 
     React.useEffect(()=> {
         setMenus(list_menu);
@@ -129,20 +163,11 @@ function Menu ({ navigation }) {
         setLoading(false);
     }, [list_food_type]);
 
-    React.useEffect(() => {
-        // console.log("menu", list_order && Object.keys(list_order).length);
-        list_order && setOrderCount(Object.keys(list_order).length);
-    }, [list_order]);
-
     const renderItem = ({ item }) => {
-        const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
-        const color = item.id === selectedId ? 'white' : 'black';
         return (
             <Item
                 item={item}
                 onPress={() => setSelectedId(item.id)}
-                backgroundColor={{ backgroundColor }}
-                textColor={{ color }}
             />
         );
     };
@@ -153,7 +178,7 @@ function Menu ({ navigation }) {
                 <ScrollView horizontal={true} style={styles.scroll}>
                     <Button mode="outlined" onPress={() => {
                         setSelectedType(0);
-                        dispatch(fetchAllMenu());
+                        dispatch(menuSlice.actions.setListMenu(list_all_menu));
                     }}
                         style={selectedType === 0 ? styles.button_active : styles.button}
                         icon={() => (
@@ -193,21 +218,6 @@ function Menu ({ navigation }) {
                     />
                 </SafeAreaView>
             }
-                
-                <FAB
-                    style={styles.fab}
-                    icon={() => (
-                        <View>
-                            <Image 
-                                source={require('../assets/image/bill.png')} 
-                                style={styles.image_fab}
-                            />
-                             <Badge style={styles.badge}>{orderCount}</Badge>
-                        </View>
-                        
-                    )}
-                    onPress={() => navigation.navigate("Home")}
-                />
             </View>
         </View>
     );
@@ -216,13 +226,6 @@ function Menu ({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-    },  
-    search: {
-        marginTop: 10,
-        marginBottom: 20,
-        marginLeft: 5,
-        marginRight: 5,
-        borderRadius: 30
     },
     image: {
         width: 30,
@@ -263,10 +266,12 @@ const styles = StyleSheet.create({
         marginBottom: 30,
         marginLeft: 20,
         marginRight: 20,
+    }, 
+    card_active: {
+        backgroundColor: "#B6D3C6",
     },  
     card_content: {
         display: "flex",
-        // flexDirection: "row",
         alignItems: "center",
         paddingLeft: 5,
         paddingRight: 5,
@@ -300,6 +305,6 @@ const styles = StyleSheet.create({
         top: -10,
         right: -10,
     }
-  });
+});
 
 export default Menu;

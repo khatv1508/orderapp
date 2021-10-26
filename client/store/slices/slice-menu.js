@@ -4,6 +4,7 @@ export const menuSlice = createSlice({
     name: 'menu',
     initialState: {
         menu: undefined,
+        list_all_menu: undefined,
         list_menu: undefined,
         list_order: undefined, 
     },
@@ -12,6 +13,12 @@ export const menuSlice = createSlice({
             return {
                 ...state,
                 menu: action.payload
+            }
+        },
+        setListAllMenu: (state, action) => {
+            return {
+                ...state,
+                list_all_menu: action.payload
             }
         },
         setListMenu: (state, action) => {

@@ -20,7 +20,7 @@ export const fetchAllMenu = () => async dispatch => {
         const result = await response.json();
         if (result) {
             // save list menu
-            dispatch(menuSlice.actions.setListMenu(result.rows));
+            dispatch(menuSlice.actions.setListAllMenu(result.rows));
             // show snack-bar
             dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Get all menu success!"}));
         } else {

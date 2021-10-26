@@ -8,6 +8,9 @@ module.exports = app => {
   
     // Retrieve all Turn
     router.get("/", turnController.findAll);
+
+    // Retrieve all Turn by id table
+    router.get("/table/:id", turnController.findAllByIdTable);
   
     // Retrieve a single Turn with id
     router.get("/:id", turnController.findOne);

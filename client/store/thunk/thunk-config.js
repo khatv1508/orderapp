@@ -11,6 +11,9 @@ const GET_ALL_MEMU_BY_TYPE = "menu/type/:type_id";
 const GET_ALL_FOOD_TYPE = "type/";
 const GET_ALL_FOOD_TYPE_BY_ID = "/type/:id";
 
+// Turn
+const GET_ALL_TURN_BY_ID_TABLE = "turn/table/:id";
+
 export {
     API_URL,
 
@@ -23,5 +26,8 @@ export {
 
     // Food Type
     GET_ALL_FOOD_TYPE,
-    GET_ALL_FOOD_TYPE_BY_ID
+    GET_ALL_FOOD_TYPE_BY_ID,
+
+    // Turn
+    GET_ALL_TURN_BY_ID_TABLE
 }
