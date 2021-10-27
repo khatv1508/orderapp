@@ -15,14 +15,12 @@ import {
 } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { settingSlice} from "../store/slices/slice-setting";
-import { fetchAllTable } from "../store/thunk/thunk-setting";
 
 function Setting () {
     const [visible, setVisible] = React.useState(false);
 
     const showDialog = () => {
         setVisible(true);
-        dispatch(fetchAllTable());
     }
 
     const hideDialog = () => {
@@ -68,7 +66,7 @@ function Setting () {
                             secureTextEntry
                             style={styles.text_input}
                         />
-                        <Subheading>Choose an option</Subheading>
+                        <Subheading>Chọn một sự lựa chọn</Subheading>
                         {tables && tables.map((table, index) => {
                             return (
                                 <RadioButton.Group 
@@ -76,17 +74,17 @@ function Setting () {
                                     value={checked} 
                                     key={index}
                                     >
-                                    <RadioButton.Item label={`Table ${table.table_number}`} value={table.table_id} />
+                                    <RadioButton.Item label={`Bàn ${table.table_number}`} value={table.table_id} />
                                 </RadioButton.Group>
                             )
                         })} 
                     </Dialog.Content>
                     <Dialog.Actions>
                         <Button style={styles.button_dialog} mode="contained" onPress={onApply} disabled={text === undefined}>
-                            Apply
+                            Chấp nhận
                         </Button>
                         <Button style={styles.button_dialog} mode="contained" onPress={hideDialog}>
-                            Cancel
+                            Hủy
                         </Button>
                     </Dialog.Actions>
                 </Dialog>

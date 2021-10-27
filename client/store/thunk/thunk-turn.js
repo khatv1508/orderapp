@@ -20,8 +20,6 @@ export const fetchAllTurnByIdTable = (table_id) => async dispatch => {
         if (result) {
             // save list turn
             dispatch(turnSlice.actions.setListTurn(result));
-            // show snack-bar
-            dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Get turn by id table success!"}));
         } else {
             dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not get result"}));
         }

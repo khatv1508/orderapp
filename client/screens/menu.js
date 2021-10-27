@@ -18,8 +18,7 @@ import {
 } from 'react-native-paper';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchAllMenu, fetchAllMenuByType } from "../store/thunk/thunk-menu";
-import { fetchAllFoodType } from "../store/thunk/thunk-food-type";
+import { fetchAllMenuByType } from "../store/thunk/thunk-menu";
 import { menuSlice } from '../store/slices/slice-menu';
 import { currencyFormat } from "../component/fomat";
 
@@ -60,6 +59,7 @@ const Item = ({ item, onPress}) => {
                     if (obj.menu_id === item.id) {
                         return {
                             ...obj, 
+                            amount: item.price * quantity,
                             qty: quantity
                         }   
                     } else {
@@ -125,7 +125,7 @@ const Item = ({ item, onPress}) => {
     );
 }
 
-function Menu ({ navigation }) {
+function Menu () {
     const [ selectedId, setSelectedId ] = React.useState(null);
 
     const [ selectedType, setSelectedType ] = React.useState(3);
@@ -140,8 +140,6 @@ function Menu ({ navigation }) {
     const dispatch = useDispatch();
 
     React.useEffect(() => {
-        dispatch(fetchAllMenu());
-        dispatch(fetchAllFoodType());
         if (selectedType > 0) {
             dispatch(fetchAllMenuByType(selectedType));
         }

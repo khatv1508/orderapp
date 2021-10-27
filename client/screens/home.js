@@ -9,8 +9,17 @@ import {
     Button,
     Provider,
 } from 'react-native-paper';
+import { fetchAllMenu } from "../store/thunk/thunk-menu";
+import { fetchAllFoodType } from "../store/thunk/thunk-food-type";
+import { fetchAllTable } from "../store/thunk/thunk-setting";
+import { useDispatch } from 'react-redux';
 
 function Home ({ navigation }) {
+    const dispatch = useDispatch();
+
+    dispatch(fetchAllMenu());
+    dispatch(fetchAllFoodType());
+    dispatch(fetchAllTable());
     return (
         <Provider>
             <View style={styles.container}>

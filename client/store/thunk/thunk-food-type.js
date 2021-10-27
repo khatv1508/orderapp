@@ -6,7 +6,7 @@ import {
 
 import { foodTypeSlice } from "../slices/slice-food-type";
 
-//  Get all menu
+//  Get all food type
 export const fetchAllFoodType = () => async dispatch => {
     try {
         const response = await fetch(API_URL.concat(GET_ALL_FOOD_TYPE), {
@@ -18,7 +18,7 @@ export const fetchAllFoodType = () => async dispatch => {
     
         const result = await response.json();
         if (result) {
-            // save list menu
+            // save list food type
             dispatch(foodTypeSlice.actions.setListFoodType(result));
         }
     } catch (error) {

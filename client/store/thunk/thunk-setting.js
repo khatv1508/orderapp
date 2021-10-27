@@ -19,8 +19,6 @@ export const fetchAllTable = () => async dispatch => {
         if (result) {
             // save list table
             dispatch(settingSlice.actions.setListTable(result));
-            // show snack-bar
-            dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Get all table success!"}));
         } else {
             dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not get result"}));
         }
