@@ -24,8 +24,8 @@ import { currencyFormat } from "../component/fomat";
 
 const Item = ({ item, onPress}) => {
     const { list_order } = useSelector((state) => state.menu);
-    const [tmpOrder, setTmpOrder] = React.useState(list_order ? list_order.arr : []);
-
+    const [ tmpOrder, setTmpOrder ] = React.useState(list_order ? list_order.arr : []);
+    
     const checkIdExist = () => {
         if (tmpOrder) {
             let tmpElement = tmpOrder.filter(obj => obj.menu_id === item.id)[0];
@@ -34,7 +34,7 @@ const Item = ({ item, onPress}) => {
             return 0;
         }
     }
-    const [quantity, setQuantity] = React.useState(checkIdExist());
+    const [ quantity, setQuantity ] = React.useState(0);
     const dispatch = useDispatch();
 
     React.useEffect(() => {
@@ -76,19 +76,28 @@ const Item = ({ item, onPress}) => {
     }, [quantity]);
 
     React.useEffect(() => {
-        list_order && setTmpOrder(list_order.arr);
+        if (list_order) {
+            setTmpOrder(list_order.arr);
+        } else {
+            setTmpOrder(undefined);
+            setQuantity(0);
+        }
     }, [list_order]);
+    
 
     React.useEffect(() => {
         let tmpTotal = 0;
-        tmpOrder.forEach((obj) => {
-            tmpTotal += obj.amount;
-        });
-        dispatch(menuSlice.actions.setListOrder({
-            id: 0,
-            arr: tmpOrder,
-            total: tmpTotal
-        }));
+        if (tmpOrder) { 
+            tmpOrder.forEach((obj) => {
+                tmpTotal += obj.amount;
+            });
+            dispatch(menuSlice.actions.setListOrder({
+                id: 0,
+                arr: tmpOrder,
+                total: tmpTotal
+            }));
+            setQuantity(checkIdExist());
+        }
     }, [tmpOrder]);
 
     return (
@@ -127,26 +136,23 @@ const Item = ({ item, onPress}) => {
 
 function Menu () {
     const [ selectedId, setSelectedId ] = React.useState(null);
-
-    const [ selectedType, setSelectedType ] = React.useState(3);
-
-    const { list_all_menu, list_menu, list_order } = useSelector((state) => state.menu);
+    const { list_all_menu, list_menu, current_food_type } = useSelector((state) => state.menu);
     const { list_food_type } = useSelector((state) => state.foodType);
 
-    const [foodTypes, setFoodTypes] = React.useState(list_food_type);
-    const [menus, setMenus] = React.useState(list_menu);
-    const [loading, setLoading] = React.useState(true);
+    const [ foodTypes, setFoodTypes ] = React.useState(list_food_type);
+    const [ menus, setMenus ] = React.useState(list_menu);
+    const [ loading, setLoading ] = React.useState(true);
 
     const dispatch = useDispatch();
 
     React.useEffect(() => {
-        if (selectedType > 0) {
-            dispatch(fetchAllMenuByType(selectedType));
+        if (current_food_type > 0) {
+            dispatch(fetchAllMenuByType(current_food_type));
         }
     }, []);
 
     React.useEffect(()=> {
-        if (selectedType === 0) {
+        if (current_food_type === 0) {
             dispatch(menuSlice.actions.setListMenu(list_all_menu));
         }
     }, [list_all_menu]);
@@ -175,10 +181,10 @@ function Menu () {
             <View style={{ flex: 1 }}> 
                 <ScrollView horizontal={true} style={styles.scroll}>
                     <Button mode="outlined" onPress={() => {
-                        setSelectedType(0);
+                        dispatch(menuSlice.actions.setCurrentFoodType(0));
                         dispatch(menuSlice.actions.setListMenu(list_all_menu));
                     }}
-                        style={selectedType === 0 ? styles.button_active : styles.button}
+                        style={current_food_type === 0 ? styles.button_active : styles.button}
                         icon={() => (
                             <Image 
                                 source={require('../assets/image/all.png')} 
@@ -190,10 +196,10 @@ function Menu () {
                     {foodTypes && foodTypes.map((item, index) => {
                         return <Button key={index} mode="outlined" 
                             onPress={() => {
-                                setSelectedType(item.type_id);
+                                dispatch(menuSlice.actions.setCurrentFoodType(item.type_id));
                                 dispatch(fetchAllMenuByType(item.type_id));
                             }}
-                            style={item.type_id === selectedType ? styles.button_active : styles.button}
+                            style={item.type_id === current_food_type ? styles.button_active : styles.button}
                             icon={() => (
                                 <Image 
                                     source={{ uri: item.type_image }} 

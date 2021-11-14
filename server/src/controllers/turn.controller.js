@@ -134,11 +134,10 @@ exports.update = (req, res) => {
 
 // Retrieve all Turn by id table
 exports.findAllByIdTable = (req, res) => {
-  const table_id = req.params.table_id;
-
-  var condition = table_id 
+  const id = req.params.id;
+  var condition = id 
   ? { 
-    [Op.and]: [{ table_id: { [Op.eq]: table_id } }, { pay_status: { [Op.eq]: 0 } }],
+    [Op.and]: [{ table_id: { [Op.eq]: id } }, { pay_status: { [Op.eq]: 0 } }],
   } 
   : null;
 
@@ -147,6 +146,13 @@ exports.findAllByIdTable = (req, res) => {
     where: condition
   })
   .then((bill) => {
+    if (!bill) {
+      res.send({
+        bill: null,
+        turns: [],
+      }); 
+      return;
+    }
     // Find all turn where bill id = A.bill_id
     Turn.findAll({
       order: [['num', 'ASC']], 
@@ -170,14 +176,14 @@ exports.findAllByIdTable = (req, res) => {
       let result = {};
       if (data) {
         // Lay thong tin bill
-        if (data.length > 1) {
+        if (data.length >= 1) {
           result = {
             bill: data[0].bill
           };
-        }
+        } 
         result = {
           ... result, 
-          turns: data.map((obj, index) => {
+          turns: data[0].bill_details.length === 0 ? [] : data.map((obj, index) => {
           let turnTotal = 0;
           let turnId = 0;
           let arrBillDetails = obj.bill_details && obj.bill_details.map((detail, index) => {
@@ -192,11 +198,14 @@ exports.findAllByIdTable = (req, res) => {
               price: detail.menu.price,
             }
           });
-          return {
-            id: turnId,
-            arr: arrBillDetails,
-            total: turnTotal
-          }
+          // if (arrBillDetails.length > 0) {
+            return {
+              id: turnId,
+              arr: arrBillDetails,
+              total: turnTotal
+            }
+          // } 
+          // return;
         })
       }
         res.send(result);

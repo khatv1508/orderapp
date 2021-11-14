@@ -22,7 +22,7 @@ export const fetchAllMenu = () => async dispatch => {
             // save list menu
             dispatch(menuSlice.actions.setListAllMenu(result.rows));
         } else {
-            dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not get result"}));
+            dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not get menu result"}));
         }
     } catch (error) {
         dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail! " + error}));
@@ -47,7 +47,7 @@ export const fetchAllMenuByType = (type_id) => async dispatch => {
             // show snack-bar
             // dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Get menu by type success!"}));
         } else {
-            dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not get result"}));
+            dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not get menu result"}));
         }
     } catch (error) {
         dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail! " + error}));

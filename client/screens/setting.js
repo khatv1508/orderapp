@@ -15,9 +15,12 @@ import {
 } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { settingSlice} from "../store/slices/slice-setting";
+import { menuSlice } from '../store/slices/slice-menu';
+// import { turnSlice} from "../store/slices/slice-turn";
+import { fetchAllTurnByIdTable } from "../store/thunk/thunk-turn";
 
 function Setting () {
-    const [visible, setVisible] = React.useState(false);
+    const [ visible, setVisible ] = React.useState(false);
 
     const showDialog = () => {
         setVisible(true);
@@ -30,17 +33,34 @@ function Setting () {
 
     const onApply = () => {
         dispatch(settingSlice.actions.setTable(checked));
+        
+        // xoa du lieu cua table hien tai
+        // // bill
+        // dispatch(turnSlice.actions.setBill(undefined));
+        // // list_turn
+        // dispatch(turnSlice.actions.setListTurn(undefined));
+        // list_order
+        dispatch(menuSlice.actions.setListOrder({
+            "arr": [],
+            "id": 0,
+            "total": 0,
+        }));
+
+        // update 
+        // bill, list_turn
+        dispatch(fetchAllTurnByIdTable(checked));
+
         hideDialog();
     };
 
-    const [checked, setChecked] = React.useState(1);
+    const [ checked, setChecked ] = React.useState(1);
 
-    const [text, setText] = React.useState(undefined);
+    const [ text, setText ] = React.useState("admin");
 
-    const {list_table, table} = useSelector((state) => state.setting);
+    const { list_table, table } = useSelector((state) => state.setting);
     const dispatch = useDispatch();
 
-    const [tables, setTables] = React.useState(list_table);
+    const [ tables, setTables ] = React.useState(list_table);
 
     React.useEffect(() => {
         setTables(list_table);
@@ -61,7 +81,7 @@ function Setting () {
                     <Dialog.Content>
                         <TextInput
                             label="Admin Pass"
-                            value={text}
+                            value={"admin"}
                             onChangeText={text => setText(text)}
                             secureTextEntry
                             style={styles.text_input}

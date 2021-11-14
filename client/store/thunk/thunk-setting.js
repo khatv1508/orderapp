@@ -20,7 +20,7 @@ export const fetchAllTable = () => async dispatch => {
             // save list table
             dispatch(settingSlice.actions.setListTable(result));
         } else {
-            dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not get result"}));
+            dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not get table result"}));
         }
     } catch (error) {
         dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail! " + error}));

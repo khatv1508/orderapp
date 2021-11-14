@@ -19,7 +19,11 @@ const BadgeIcon = ({ routeName, color, size }) => {
     const [orderCount, setOrderCount] = React.useState(list_order ? list_order.arr.length : 0);
 
     React.useEffect(() => {
-        list_order && setOrderCount(list_order.arr.length);
+        if (list_order) { 
+            setOrderCount(list_order.arr.length);
+        } else {
+            setOrderCount(0);
+        }
     }, [list_order]);
 
     return <View>

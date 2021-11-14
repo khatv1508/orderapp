@@ -98,9 +98,9 @@ const validate = async (reqBody) => {
     }
   }
 
-  if (!reqBody.details || reqBody.details.length === 0) {
+  if (reqBody.bill_id && (!reqBody.details || reqBody.details.length === 0)) {
     message = message.concat("Details id can not be empty! ");
-  } else {
+  } else if (reqBody.bill_id) {
       for(let i = 0; i < reqBody.details.length; i++) {
         if (!reqBody.details[i].menu_id) {
             message = message.concat("Menu id can not be empty! ");
@@ -160,9 +160,7 @@ exports.order = async (req, res) => {
         await insertTurnBillDetail(data.id, details);
         res.send({
           message: "Order success!",
-          content: {
-            bill_id: data.id
-          }
+          content: data
         });
       })
       .catch(err => {
@@ -194,9 +192,7 @@ exports.order = async (req, res) => {
         //  tra ve ket qua
         res.send({
           message: "Order success!",
-          content: {
-            bill_id: data.id
-          }
+          content: data
         });
       })
       .catch(err => {

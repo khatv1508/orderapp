@@ -13,6 +13,7 @@ import { fetchAllTable } from "./thunk/thunk-setting";
 import { fetchAllMenu } from "./thunk/thunk-menu";
 import { fetchAllFoodType } from "./thunk/thunk-food-type";
 import { fetchAllTurnByIdTable } from "./thunk/thunk-turn";
+import { fetchInsertBill, fetchUpdateBill } from "./thunk/thunk-order";
 
 const composedEnhancer = composeWithDevTools(applyMiddleware(thunkMiddleware))
 
@@ -38,3 +39,6 @@ store.dispatch(fetchAllMenu);
 store.dispatch(fetchAllFoodType);
 // Turn
 store.dispatch(fetchAllTurnByIdTable);
+// Bill Order
+store.dispatch(fetchInsertBill);
+store.dispatch(fetchUpdateBill);

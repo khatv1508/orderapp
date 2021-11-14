@@ -15,7 +15,7 @@ import imageDefault from "../../assets/image/no-image.png";
 import { IoMdCheckmark } from "react-icons/io";
 import { historyFormSlice } from "../../store/slices/history-form";
 import { useDispatch } from "react-redux";
-import { fetchUpdateTurn } from "../../store/thunk/thunk-history";
+import { fetchUpdateTurn, fetchAllTurn } from "../../store/thunk/thunk-history";
 
 // Order item
 function Order ({order}) {
@@ -27,6 +27,7 @@ function Order ({order}) {
 
     const handleConfirmm = () => {
         dispatch(fetchUpdateTurn(order.id));
+        dispatch(fetchAllTurn());
     }
 
     const getTotal = () => {
