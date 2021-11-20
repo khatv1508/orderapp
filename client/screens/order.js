@@ -12,15 +12,26 @@ import {
     Divider,
     Button,
     List,
+    Dialog,
 } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchAllTurnByIdTable } from "../store/thunk/thunk-turn";
 import { currencyFormat } from "../component/fomat";
 import { Ionicons } from 'react-native-vector-icons';
+import { turnSlice} from "../store/slices/slice-turn";
+import { fetchInsertBill, fetchUpdateBill, fetchCreateBill } from "../store/thunk/thunk-order";
 
 const Item = ({ item, index }) => {
-    const [expanded, setExpanded] = React.useState(item.id === 0);
+    const [ expanded, setExpanded ] = React.useState(item.id === 0);
     const handlePress = () => setExpanded(!expanded);
+
+    const dispatch = useDispatch();
+    const { table } = useSelector((state) => state.setting);
+
+    const onOrderBill = () => {
+        dispatch(fetchInsertBill());
+        dispatch(fetchAllTurnByIdTable(table));
+    }
 
     return (
         <List.Section style={{backgroundColor: "white"}}>
@@ -52,23 +63,25 @@ const Item = ({ item, index }) => {
                 <Divider />
                 <Subheading style={styles.subheading_total}>Tổng tiền: {currencyFormat(item.total)}</Subheading>
             </List.Accordion>
-            {item.id === 0 && <Button onPress={() => console.log("order")} mode="contained" style={styles.button_order}>Gọi ngay</Button>}
+            {item.id === 0 && <Button onPress={onOrderBill} mode="contained" style={styles.button_order}>Gọi ngay</Button>}
         </List.Section>
     );
 }
 
-const Turn = () => {
+const Turn = ({ navigation }) => {
     const dispatch = useDispatch();
     const { list_turn } = useSelector((state) => state.turn);
-    const [turns, setTurns] = React.useState(list_turn ? list_turn.turns : undefined);
+    const [ turns, setTurns ] = React.useState(list_turn ? list_turn.turns : undefined);
     const { list_order } = useSelector((state) => state.menu);
-    const [billTotal, setBillTotals] = React.useState(list_turn ? list_turn.turns : undefined);
+    const [ billTotal, setBillTotals ] = React.useState(list_turn ? list_turn.turns : undefined);
+    const { bill } = useSelector((state) => state.turn);
+    const [ bills, setBills ] = React.useState(bill);
 
     React.useEffect(()=> {
-        list_turn && setTurns(list_turn.turns);
+        list_turn && setTurns(list_turn);
         // list turn
         let tmpTotal = 0;
-        list_turn && list_turn.turns.forEach((obj) => {
+        list_turn && list_turn.map((obj) => {
             tmpTotal += obj.total;
         });
         // list order
@@ -76,11 +89,25 @@ const Turn = () => {
             tmpTotal += list_order.total;
         }
         setBillTotals(tmpTotal);
-    }, [list_turn, list_order]);
+        if (!list_turn) {
+            setTurns(undefined);
+        }
+        setBills(bill);
+    }, [list_turn, list_order, bill]);
 
-    React.useEffect(() => {
-        dispatch(fetchAllTurnByIdTable(1));
-    }, []);
+    const [visible, setVisible] = React.useState(false);
+    const showDialog = () => {
+        setVisible(true);
+    }
+    const hideDialog = () => {
+        setVisible(false);
+    };
+
+    const onApply = () => {
+        dispatch(turnSlice.actions.setListTurn(undefined));
+        dispatch(fetchUpdateBill());
+        hideDialog();
+    };
 
     const renderItem = ({ item, index }) => {
         return <Item item={item} index={index}/>
@@ -89,20 +116,42 @@ const Turn = () => {
     return (
         <View style={{ flex: 9, justifyContent: "center", marginBottom: 10 }}>
             <SafeAreaView style={styles.area_view}>
-                {turns && <FlatList
+                {(turns || list_order) && <FlatList
                     data={list_order && list_order.arr.length > 0 
-                        ? [...turns, list_order]
+                        ? turns ? [...turns, list_order] : list_order
                         : turns}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => String(index)}
                 />}
             </SafeAreaView>
-            <View style={{backgroundColor: "#fff", marginLeft: 10, marginRight: 10}}>
+            <View style={styles.view_pay}>
                 <Subheading style={styles.subheading}>Tổng: {currencyFormat(billTotal)}</Subheading>
-                <Button onPress={() => console.log("pay")} mode="contained" style={styles.button_pay}>
-                    Thanh toán 
-                </Button>
+                {billTotal || bills
+                ? <Button onPress={showDialog} mode="contained" style={styles.button_pay}>
+                        Thanh toán 
+                    </Button>
+                : <Button style={styles.button_add} mode="contained" onPress={() => {
+                        navigation.navigate("Menu");
+                        dispatch(fetchCreateBill());
+                    }}
+                >
+                        Hóa đơn mới
+                    </Button> 
+                }
             </View>
+            <Dialog visible={visible} onDismiss={hideDialog} style={styles.dialog}>
+                <Dialog.Content>
+                    <Subheading>Bạn có muốn thanh toán !</Subheading>
+                </Dialog.Content>
+                <Dialog.Actions>
+                    <Button style={styles.button_dialog} mode="contained" onPress={onApply}>
+                        Chấp nhận
+                    </Button>
+                    <Button style={styles.button_dialog} mode="contained" onPress={hideDialog}>
+                        Hủy
+                    </Button>
+                </Dialog.Actions>
+            </Dialog>
         </View>
     );
 }
@@ -115,6 +164,11 @@ const styles = StyleSheet.create({
         marginRight: 5,
         marginBottom: 10,
     },
+    view_pay: {
+        backgroundColor: "#fff", 
+        marginLeft: 10, 
+        marginRight: 10, 
+    },
     subheading: {
         fontSize: 22,
         textAlign: "center",
@@ -126,6 +180,15 @@ const styles = StyleSheet.create({
     },
     button_pay: {
         backgroundColor: "#1C8DFF",
+    },
+    button_add: {
+        backgroundColor: "#FF6347",
+    },
+    dialog: {
+    },
+    button_dialog: {
+        backgroundColor: "#FF6347",
+        margin: 5
     },
     bill_container: {
         flex: 0,

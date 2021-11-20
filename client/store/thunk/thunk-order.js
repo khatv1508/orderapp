@@ -6,6 +6,36 @@ import {
 import { snackBarSlice } from "../slices/slice-snack-bar";
 import { menuSlice } from "../slices/slice-menu";
 import { fetchAllTurnByIdTable } from "../thunk/thunk-turn";
+import { turnSlice } from "../slices/slice-turn";
+
+// create bill
+export const fetchCreateBill = () => async (dispatch, getState) => {
+    try {
+        const state = getState();
+        const table = state.setting.table;
+        const response = await fetch(API_URL.concat(POST_BILL_ORDER), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                bill_id: null,
+                account_id: 2,
+                table_id: table,
+                details: []
+            }),
+        });
+        const result = await response.json();
+        // 
+        if (result && result.content) {
+            dispatch(turnSlice.actions.setBill(result.content));
+        } else {
+            dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not create bill"}));
+        }
+    } catch (error) {
+        dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail!-fetchCreateBill " + error}));
+    }
+}
 
 //  Insert Bill Order
 export const fetchInsertBill = () => async (dispatch, getState) => {
@@ -44,39 +74,38 @@ export const fetchInsertBill = () => async (dispatch, getState) => {
         if (result) {
             // 
             dispatch(menuSlice.actions.setListOrder(undefined));
-            dispatch(fetchAllTurnByIdTable());
+            dispatch(fetchAllTurnByIdTable(table));
             // 
         } else {
             dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not insert"}));
         }
     } catch (error) {
-        dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail! " + error}));
+        dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail!-fetchInsertBill " + error}));
     }
 }
 
 //  Update Bill Order
-export const fetchUpdateBill = () => async (dispatch) => {
+export const fetchUpdateBill = () => async (dispatch, getState) => {
     try {
         const state = getState();
         const bill = state.turn.bill;
+        const table = state.setting.table;
+
         // 
-        const response = await fetch(API_URL.concat(PUT_BILL_ORDER.replace(":id", bill.bill_id)), {
+        const response = await fetch(API_URL.concat(PUT_BILL_ORDER.replace(":id", bill.id)), {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
         });
     
         const result = await response.json();
         if (result) {
             // 
             dispatch(menuSlice.actions.setListOrder(undefined));
-            dispatch(fetchAllTurnByIdTable());
+            dispatch(fetchAllTurnByIdTable(table));
             // 
         } else {
             dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not update"}));
         }
     } catch (error) {
-        dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail! " + error}));
+        dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail!-fetchUpdateBill " + error}));
     }
 }

@@ -157,11 +157,18 @@ exports.order = async (req, res) => {
         total: getTotal(0, details)
       }, bill))
       .then(async data => {
-        await insertTurnBillDetail(data.id, details);
-        res.send({
-          message: "Order success!",
-          content: data
-        });
+        if (!details || details.length === 0) {
+          res.send({
+            message: "Order success!",
+            content: data
+          });
+        } else {
+          await insertTurnBillDetail(data.id, details);
+          res.send({
+            message: "Order success!",
+            content: data
+          });
+        }
       })
       .catch(err => {
         res.status(500).send({

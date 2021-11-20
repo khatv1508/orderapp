@@ -1,7 +1,6 @@
 import {
     API_URL, 
-    GET_ALL_TURN_BY_ID_TABLE,
-    POST_BILL_ORDER
+    GET_ALL_TURN_BY_ID_TABLE
 } from "./thunk-config";
 import { turnSlice } from "../slices/slice-turn";
 import { snackBarSlice } from "../slices/slice-snack-bar";
@@ -31,37 +30,7 @@ export const fetchAllTurnByIdTable = (table_id) => async dispatch => {
             dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not get result"}));
         }
     } catch (error) {
-        dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail! " + error}));
+        dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail!-fetchAllTurnByIdTable " + error}));
     }
 }
 
-// create bill
-export const fetchCreateBill = () => async (dispatch, getState) => {
-    try {
-        const state = getState();
-        const table = state.setting.table;
-        console.log(table);
-        const response = await fetch(API_URL.concat(POST_BILL_ORDER), {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                bill_id: null,
-                account_id: 2,
-                table_id: table,
-                details: []
-            }),
-        });
-        const result = await response.json();
-        // 
-        if (result && result.content) {
-            console.log("create");
-            dispatch(turnSlice.actions.setBill(result.content));
-        } else {
-            dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not create bill"}));
-        }
-    } catch (error) {
-        dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail! " + error}));
-    }
-}

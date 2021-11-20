@@ -18,7 +18,7 @@ const GET_ALL_TURN_BY_ID_TABLE = "turn/table/:id";
 const POST_BILL_ORDER = "bill/order";
 
 // Pay Bill
-const PUT_BILL_ORDER = "paybill/:id";
+const PUT_BILL_ORDER = "bill/paybill/:id";
 
 export {
     API_URL,
