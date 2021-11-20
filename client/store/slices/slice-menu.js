@@ -7,7 +7,7 @@ export const menuSlice = createSlice({
         list_all_menu: undefined,
         list_menu: undefined,
         list_order: undefined, 
-        current_food_type: 3,
+        current_food_type: 0,
     },
     reducers: {
         setMenu: (state, action) => {
