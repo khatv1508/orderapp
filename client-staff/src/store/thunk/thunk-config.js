@@ -26,6 +26,9 @@ const DELETE_ACCOUNT = "account/:id";
 const GET_ALL_TURN = "turn/";
 const PUT_UPDATE_TURN = "turn/:id";
 
+// Pay Bill
+const PUT_BILL_ORDER = "bill/paybill/:id";
+
 export {
     API_URL,
 
@@ -54,4 +57,7 @@ export {
     // Turn history
     GET_ALL_TURN,
     PUT_UPDATE_TURN,
+
+    // Pay bill
+    PUT_BILL_ORDER,
 }

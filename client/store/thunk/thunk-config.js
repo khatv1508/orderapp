@@ -1,4 +1,5 @@
 const API_URL = "http://192.168.1.39:8000/api/";
+const SOCKET_URL = "http://192.168.1.39:5000";
 
 //  Table
 const GET_ALL_TABLE = "table/";
@@ -17,11 +18,9 @@ const GET_ALL_TURN_BY_ID_TABLE = "turn/table/:id";
 // Bill order
 const POST_BILL_ORDER = "bill/order";
 
-// Pay Bill
-const PUT_BILL_ORDER = "bill/paybill/:id";
-
 export {
     API_URL,
+    SOCKET_URL,
 
     // Table
     GET_ALL_TABLE,
@@ -39,7 +38,4 @@ export {
 
     // Bill order
     POST_BILL_ORDER,
-
-    // Pay Bill 
-    PUT_BILL_ORDER
 }

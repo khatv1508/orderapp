@@ -24,6 +24,7 @@ import { currencyFormat } from "../component/fomat";
 
 const Item = ({ item, onPress}) => {
     const { list_order } = useSelector((state) => state.menu);
+    const { is_paided } = useSelector((state) => state.turn);
     const [ tmpOrder, setTmpOrder ] = React.useState(list_order ? list_order.arr : []);
     
     const checkIdExist = () => {
@@ -107,27 +108,29 @@ const Item = ({ item, onPress}) => {
                 <View style={styles.text_content}>
                     <Title>{item.food_name}</Title>
                     <Text>Đơn giá: {currencyFormat(item.price)}</Text>
-                    <View style={styles.button_content}>
-                        <IconButton 
-                            icon="minus-circle-outline" 
-                            size={35}
-                            color={Colors.red500}
-                            style={styles.button_plus_minus}
-                            onPress={() => {
-                                quantity > 0 && setQuantity(quantity - 1);
-                            }}
-                        />
-                        <Text>{quantity}</Text>
-                        <IconButton 
-                            icon="plus-circle-outline" 
-                            size={35}
-                            color={Colors.red500}
-                            style={styles.button_plus_minus}
-                            onPress={() => {
-                                setQuantity(quantity + 1);
-                            }}
-                        />
-                    </View>
+                    {!is_paided && 
+                        <View style={styles.button_content}>
+                            <IconButton 
+                                icon="minus-circle-outline" 
+                                size={35}
+                                color={Colors.red500}
+                                style={styles.button_plus_minus}
+                                onPress={() => {
+                                    quantity > 0 && setQuantity(quantity - 1);
+                                }}
+                            />
+                            <Text>{quantity}</Text>
+                            <IconButton 
+                                icon="plus-circle-outline" 
+                                size={35}
+                                color={Colors.red500}
+                                style={styles.button_plus_minus}
+                                onPress={() => {
+                                    setQuantity(quantity + 1);
+                                }}
+                            />
+                        </View>
+                    }
                 </View>
             </View>
         </Card> 

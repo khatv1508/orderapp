@@ -6,6 +6,7 @@ export const turnSlice = createSlice({
         turn: undefined,
         list_turn: undefined,
         bill: undefined,
+        is_paided: false,
     },
     reducers: {
         setTurn: (state, action) => {
@@ -24,6 +25,12 @@ export const turnSlice = createSlice({
             return {
                 ...state,
                 bill: action.payload
+            }
+        },
+        setIsPaided: (state, action) => {
+            return {
+                ...state,
+                is_paided: action.payload
             }
         }
     }

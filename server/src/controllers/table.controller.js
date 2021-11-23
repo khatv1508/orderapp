@@ -55,15 +55,31 @@ const parseTurn = (turns) => {
   return dataReturn;
 }
 
+const getTurnTotal = (turns) => {
+  let dataReturn = 0;
+
+  turns && turns.forEach((item) => {
+    dataReturn += item.total;
+  })
+
+  return dataReturn;
+}
+
 //  
 const parseData = (data) => {
   let dataReturn = [];
 
   data.forEach(element => {
+    let tmpTurn = null;
+    if (element.bills && element.bills.length > 0){
+      tmpTurn = parseTurn(element.bills[0].turns);
+    }
     let tempData = {
+      bill_id: element.bills && element.bills.length > 0 ? element.bills[0].id : null,
       number: element.table_number,
-      turns: element.bills && element.bills.length > 0 ? parseTurn(element.bills[0].turns) : null,
-      status: element.bills && element.bills.length > 0 ? 1 : 0 
+      turns: tmpTurn,
+      status: element.bills && element.bills.length > 0 ? 1 : 0 ,
+      turnTotal: element.bills && element.bills.length > 0 ? getTurnTotal(tmpTurn) : 0
     }
     dataReturn.push(tempData);
   });

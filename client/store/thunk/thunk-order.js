@@ -1,7 +1,6 @@
 import {
     API_URL, 
     POST_BILL_ORDER,
-    PUT_BILL_ORDER
 } from "./thunk-config";
 import { snackBarSlice } from "../slices/slice-snack-bar";
 import { menuSlice } from "../slices/slice-menu";
@@ -42,6 +41,7 @@ export const fetchInsertBill = () => async (dispatch, getState) => {
     try {
         // lay list order tu state 
         const state = getState();
+        const socketEmit = state.socket;
         const list_order = state.menu.list_order.arr;
         // const current_food_type = state.menu.current_food_type;
         const bill = state.turn.bill;
@@ -75,37 +75,13 @@ export const fetchInsertBill = () => async (dispatch, getState) => {
             // 
             dispatch(menuSlice.actions.setListOrder(undefined));
             dispatch(fetchAllTurnByIdTable(table));
-            // 
+            // socket emit
+            socketEmit && socketEmit.socket.emit("order", "client-app");
         } else {
             dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not insert"}));
         }
     } catch (error) {
+        console.log(error);
         dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail!-fetchInsertBill " + error}));
-    }
-}
-
-//  Update Bill Order
-export const fetchUpdateBill = () => async (dispatch, getState) => {
-    try {
-        const state = getState();
-        const bill = state.turn.bill;
-        const table = state.setting.table;
-
-        // 
-        const response = await fetch(API_URL.concat(PUT_BILL_ORDER.replace(":id", bill.id)), {
-            method: 'PUT',
-        });
-    
-        const result = await response.json();
-        if (result) {
-            // 
-            dispatch(menuSlice.actions.setListOrder(undefined));
-            dispatch(fetchAllTurnByIdTable(table));
-            // 
-        } else {
-            dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Can not update"}));
-        }
-    } catch (error) {
-        dispatch(snackBarSlice.actions.setSnackBar({isOpen: true, message: "Fail!-fetchUpdateBill " + error}));
     }
 }

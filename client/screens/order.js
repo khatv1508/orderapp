@@ -19,7 +19,8 @@ import { fetchAllTurnByIdTable } from "../store/thunk/thunk-turn";
 import { currencyFormat } from "../component/fomat";
 import { Ionicons } from 'react-native-vector-icons';
 import { turnSlice} from "../store/slices/slice-turn";
-import { fetchInsertBill, fetchUpdateBill, fetchCreateBill } from "../store/thunk/thunk-order";
+import { fetchInsertBill, fetchCreateBill } from "../store/thunk/thunk-order";
+import { Socket } from 'socket.io-client';
 
 const Item = ({ item, index }) => {
     const [ expanded, setExpanded ] = React.useState(item.id === 0);
@@ -70,12 +71,13 @@ const Item = ({ item, index }) => {
 
 const Turn = ({ navigation }) => {
     const dispatch = useDispatch();
-    const { list_turn } = useSelector((state) => state.turn);
+    const { list_turn, bill, is_paided } = useSelector((state) => state.turn);
     const [ turns, setTurns ] = React.useState(list_turn ? list_turn.turns : undefined);
     const { list_order } = useSelector((state) => state.menu);
     const [ billTotal, setBillTotals ] = React.useState(list_turn ? list_turn.turns : undefined);
-    const { bill } = useSelector((state) => state.turn);
     const [ bills, setBills ] = React.useState(bill);
+    const { socket } = useSelector((state) => state.socket);
+    const { table } = useSelector((state) => state.setting);
 
     React.useEffect(()=> {
         list_turn && setTurns(list_turn);
@@ -104,8 +106,8 @@ const Turn = ({ navigation }) => {
     };
 
     const onApply = () => {
-        dispatch(turnSlice.actions.setListTurn(undefined));
-        dispatch(fetchUpdateBill());
+        dispatch(turnSlice.actions.setIsPaided(true));
+        socket && socket.emit("pay", table);
         hideDialog();
     };
 
@@ -126,7 +128,7 @@ const Turn = ({ navigation }) => {
             </SafeAreaView>
             <View style={styles.view_pay}>
                 <Subheading style={styles.subheading}>Tổng: {currencyFormat(billTotal)}</Subheading>
-                {billTotal || bills
+                {!is_paided ? billTotal || bills
                 ? <Button onPress={showDialog} mode="contained" style={styles.button_pay}>
                         Thanh toán 
                     </Button>
@@ -137,7 +139,7 @@ const Turn = ({ navigation }) => {
                 >
                         Hóa đơn mới
                     </Button> 
-                }
+                : <></>}
             </View>
             <Dialog visible={visible} onDismiss={hideDialog} style={styles.dialog}>
                 <Dialog.Content>
@@ -162,7 +164,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginLeft: 5,
         marginRight: 5,
-        marginBottom: 10,
+        marginBottom: 20,
     },
     view_pay: {
         backgroundColor: "#fff", 

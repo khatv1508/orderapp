@@ -22,6 +22,11 @@ import { fetchAllTurnByIdTable } from "../store/thunk/thunk-turn";
 import { fetchCreateBill } from "../store/thunk/thunk-order";
 import { useDispatch, useSelector } from 'react-redux';
 import { currencyFormat } from "../component/fomat";
+import { io } from "socket.io-client";
+import { socketSlice } from "../store/slices/socket";
+import { menuSlice } from "../store/slices/slice-menu";
+import { turnSlice } from "../store/slices/slice-turn";
+import { SOCKET_URL }  from "../store/thunk/thunk-config";
 
 const Item = ({ item, index }) => {
     return (
@@ -35,10 +40,9 @@ const Item = ({ item, index }) => {
 function Home ({ navigation }) {
     const dispatch = useDispatch();
     const { table } = useSelector((state) => state.setting);
-    const { bill } = useSelector((state) => state.turn);
-    const [bills, setBills] = React.useState(bill);
-    const { list_turn } = useSelector((state) => state.turn);
+    const { list_turn, bill } = useSelector((state) => state.turn);
     const [ turns, setTurns ] = React.useState(list_turn ? list_turn.turns : undefined);
+    const [bills, setBills] = React.useState(bill);
 
     React.useEffect(()=> {
         // bill
@@ -56,6 +60,8 @@ function Home ({ navigation }) {
         dispatch(fetchAllFoodType());
         dispatch(fetchAllTable());
         dispatch(fetchAllTurnByIdTable(table));
+        // socket
+        dispatch(socketSlice.actions.setSocket(io(SOCKET_URL)));
     }, []);
     
     const renderItem = ({ item, index }) => {
@@ -88,6 +94,14 @@ function Home ({ navigation }) {
                 <Button style={styles.button} mode="contained" onPress={() => navigation.navigate("Order")}>
                     Xem chi tiết
                 </Button>
+                <Button style={styles.button} mode="contained" onPress={() => {
+                    dispatch(turnSlice.actions.setListTurn([]));
+                    dispatch(turnSlice.actions.setBill(undefined));
+                    dispatch(turnSlice.actions.setIsPaided(false));
+                    dispatch(menuSlice.actions.setListOrder(undefined));
+                }}>
+                    Làm mới 
+                </Button>
             </Card>
             : <View style={styles.container}>
                 <Image 
@@ -105,8 +119,6 @@ function Home ({ navigation }) {
                 </Button>
             </View> 
             }
-            
-            
         </Provider>
     );
 }

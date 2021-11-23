@@ -1,11 +1,33 @@
-const express = require('express')
+const express = require('express');
+const { Server } = require("socket.io");
+const { createServer } = require("http");
+
 const cors = require("cors");
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: ["http://localhost:3000", "http://192.168.1.39:19000"],
+    methods: ["GET", "POST"]
+  }
+});
 
 var corsOptions = {
   origin: "http://localhost:3000"
 };
+
+io.on("connection", (socket) => {
+  socket.on("order", (arg) => {
+    // console.log(arg);
+    socket.broadcast.emit("has-order");
+  });
+  socket.on("pay", (arg) => {
+    // console.log(arg);
+    socket.broadcast.emit("has-pay", arg);
+  });
+});
+httpServer.listen(5000);
 
 app.use(cors(corsOptions));
 

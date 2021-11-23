@@ -7,13 +7,14 @@ import { menuSlice } from './slices/slice-menu';
 import { foodTypeSlice } from './slices/slice-food-type';
 import { turnSlice } from './slices/slice-turn';
 import { snackBarSlice } from './slices/slice-snack-bar';
+import { socketSlice } from './slices/socket';
 
 // import thunk
 import { fetchAllTable } from "./thunk/thunk-setting";
 import { fetchAllMenu } from "./thunk/thunk-menu";
 import { fetchAllFoodType } from "./thunk/thunk-food-type";
 import { fetchAllTurnByIdTable } from "./thunk/thunk-turn";
-import { fetchInsertBill, fetchUpdateBill } from "./thunk/thunk-order";
+import { fetchInsertBill } from "./thunk/thunk-order";
 
 const composedEnhancer = composeWithDevTools(applyMiddleware(thunkMiddleware))
 
@@ -23,6 +24,7 @@ const reducer = combineReducers({
     foodType: foodTypeSlice.reducer,
     turn: turnSlice.reducer,
     snackBar: snackBarSlice.reducer,
+    socket: socketSlice.reducer,
   });
 
 export const store = createStore(
@@ -41,4 +43,3 @@ store.dispatch(fetchAllFoodType);
 store.dispatch(fetchAllTurnByIdTable);
 // Bill Order
 store.dispatch(fetchInsertBill);
-store.dispatch(fetchUpdateBill);

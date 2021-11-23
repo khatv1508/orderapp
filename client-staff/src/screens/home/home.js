@@ -12,7 +12,10 @@ import {
     Stepper,
     Step,
     StepLabel,
-    IconButton
+    IconButton,
+    Dialog,
+    DialogTitle,
+    DialogActions
 } from '@mui/material';
 import tableIcon from "../../assets/image/table.png";
 import { RiCheckboxBlankCircleFill, RiIndeterminateCircleFill } from "react-icons/ri";
@@ -23,17 +26,20 @@ import { useSelector, useDispatch } from 'react-redux';
 import ShowMore from "../../components/order/show_more";
 import { fetchAllTableDetail } from "../../store/thunk/thunk-table";
 import { fetchAllTurn } from "../../store/thunk/thunk-history";
+import { fetchUpdateBill } from "../../store/thunk/thunk-order";
 
 // Table item
-const TableItem = ({table}) => {
+const TableItem = ({table, payTable, setPayTable}) => {
     const [expanded, setExpanded] = React.useState(false);
+    const dispatch = useDispatch();
     const itemCount =  table.turns ? table.turns.length : 0;
     const expandClick = () => {
         if(itemCount > 2) setExpanded((prev) => !prev);
     }
-
     return (
-        <Card className="table-item">
+        <Card className="table-item"
+            style={payTable === table.number ? {border: "2px solid red"} : {}}
+        >
             <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                 <Avatar className="avatar-table" alt="" src={tableIcon} />
                 <div style={{width: "100%"}}>
@@ -89,14 +95,26 @@ const TableItem = ({table}) => {
 
             <Divider style={{width: "calc(100% - 25px)", margin: "0 10px"}} />
 
+            <h3 style={{textAlign: "right", marginRight: "20px"}}>Bill Total: {table.turnTotal}</h3>
+
             <CardActions style={{display: "flex", justifyContent: "space-between", padding: "20px 10px"}}>
                 {table.status === 0 ? 
                     <Button variant="outlined" style={{border: "2px solid"}} startIcon={<RiIndeterminateCircleFill />}>
                         Inactive
                     </Button> : 
-                    <Button variant="outlined" color="secondary" style={{border: "2px solid"}} startIcon={<RiCheckboxBlankCircleFill />}>
-                        Active
-                    </Button>
+                    <div style={{width: "100%", display: "flex", justifyContent: "space-between"}}>
+                        <Button variant="outlined" color="secondary" style={{border: "2px solid"}} startIcon={<RiCheckboxBlankCircleFill />}>
+                            Active
+                        </Button>
+                        <Button variant="outlined" style={{border: "2px solid", marginLeft: ""}} 
+                            onClick={()=> {
+                                dispatch(fetchUpdateBill(table.bill_id));
+                                setPayTable(undefined);
+                            }}
+                        >
+                            Pay Bill
+                        </Button>
+                    </div>
                 }
             </CardActions>
         </Card>
@@ -119,11 +137,36 @@ function Home() {
 
     const refreshTable = () => {
         dispatch(fetchAllTableDetail());
-      }
+        }
 
-      const refreshNewOrder = () => {
+    const refreshNewOrder = () => {
         dispatch(fetchAllTurn(0));
-      }
+    }
+
+    const [open, setOpen] = React.useState(false);
+    const [payTable, setPayTable] = React.useState(undefined);
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    //  socket io
+    const { socket } = useSelector((state) => state.socket);
+
+    React.useEffect(() => {
+        socket && socket.on("has-order", () => {
+            refreshTable();
+            refreshNewOrder();
+        }); 
+        socket && socket.on("has-pay", (arg) => {
+            setOpen(true);
+            setPayTable(arg);
+        }); 
+        // eslint-disable-next-line
+    },[socket]);
+
+    
+
     return (
         <div style={{padding: "0 20px"}}>
             <ShowMore />
@@ -153,7 +196,7 @@ function Home() {
                 <Grid container spacing={2} item lg={9} className="step-table">
                     {tableDetails && tableDetails.map((tableDetail, index) => {
                         return <Grid key={index} item lg={3} className="table"> 
-                            <TableItem table={tableDetail}/>
+                            <TableItem table={tableDetail} payTable={payTable} setPayTable={setPayTable}/>
                         </Grid>
                     })}
                     
@@ -165,8 +208,25 @@ function Home() {
                     })}
                 </Grid>
             </Grid>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Table {payTable} muốn thanh toán !
+                </DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleClose} autoFocus>
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Button onClick={()=> {socket.emit("pay", 1);}}>test</Button>
         </div>
-      );
+    );
 }
 
 export default Home;

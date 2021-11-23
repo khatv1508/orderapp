@@ -8,6 +8,7 @@ import { menuFormSlice } from './slices/menu-form';
 import { snackBarSlice } from './slices/snack-bar';
 import { tableFormSlice } from './slices/table-form';
 import { historyFormSlice } from './slices/history-form';
+import { socketSlice } from './slices/socket';
 
 // import thunk
 import { 
@@ -42,7 +43,8 @@ const reducer = combineReducers({
   menuForm: menuFormSlice.reducer,
   snackBar: snackBarSlice.reducer,
   tableForm: tableFormSlice.reducer,
-  historyForm: historyFormSlice.reducer
+  historyForm: historyFormSlice.reducer,
+  socket: socketSlice.reducer,
 });
 
 const composedEnhancer = composeWithDevTools(applyMiddleware(thunkMiddleware))
