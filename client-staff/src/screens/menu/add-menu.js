@@ -107,7 +107,7 @@ function AddMenu() {
                                 )}
                             </Field>
 
-                            <pre>{JSON.stringify(values, 0, 2)}</pre>
+                            {/* <pre>{JSON.stringify(values, 0, 2)}</pre> */}
 
                             <Stack spacing={2} direction="row" justifyContent="flex-end" sx={{ p: 1 }}> 
                                 <Button variant="outlined" type="submit" disabled={submitting} >Apply</Button>

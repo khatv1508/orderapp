@@ -223,8 +223,6 @@ function Home() {
                     </Button>
                 </DialogActions>
             </Dialog>
-
-            <Button onClick={()=> {socket.emit("pay", 1);}}>test</Button>
         </div>
     );
 }

@@ -111,7 +111,7 @@ function ImageMenu() {
                     </div>
                     )}
                 </ImageUploading>
-                <pre>{JSON.stringify(images, 0, 2)}</pre>
+                {/* <pre>{JSON.stringify(images, 0, 2)}</pre> */}
                 </DialogContent>
                 <DialogActions>
                     <Stack spacing={2} direction="row" justifyContent="flex-end" sx={{ p: 1 }}> 

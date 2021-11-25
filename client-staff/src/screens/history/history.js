@@ -18,7 +18,8 @@ const History = () => {
 
     React.useEffect(() => {
         setTurns(list_turn);
-        dispatch(fetchAllTurn()); // eslint-disable-next-line
+        // dispatch(fetchAllTurn()); 
+        // eslint-disable-next-line
     }, [list_turn]);
 
     const refreshHistory = () => {

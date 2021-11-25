@@ -163,7 +163,7 @@ function ResetForm() {
                             <form onSubmit={handleSubmit} style={{minWidth: '300px'}}>
                                 {account && account.role_id === 1 ? <ResetAdmin /> : <ResetAccount copyClipBoard={handleCopyToClipBoard}/>}
                                                                 
-                                <pre>{JSON.stringify(values, 0, 2)}</pre>
+                                {/* <pre>{JSON.stringify(values, 0, 2)}</pre> */}
 
                                 <Stack spacing={2} direction="row" justifyContent="flex-end" sx={{ p: 1 }}> 
                                     <Button variant="outlined" type="submit" disabled={submitting} >Apply</Button>

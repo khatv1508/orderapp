@@ -5,7 +5,7 @@ import {
     View,
     Image,
     SafeAreaView,
-    FlatList
+    FlatList,
 } from 'react-native';
 import {
     Button,
@@ -13,7 +13,9 @@ import {
     Card,
     Title,
     Subheading,
-    List
+    List,
+    IconButton,
+    Colors
 } from 'react-native-paper';
 import { fetchAllMenu } from "../store/thunk/thunk-menu";
 import { fetchAllFoodType } from "../store/thunk/thunk-food-type";
@@ -40,7 +42,7 @@ const Item = ({ item, index }) => {
 function Home ({ navigation }) {
     const dispatch = useDispatch();
     const { table } = useSelector((state) => state.setting);
-    const { list_turn, bill } = useSelector((state) => state.turn);
+    const { list_turn, bill, is_paided } = useSelector((state) => state.turn);
     const [ turns, setTurns ] = React.useState(list_turn ? list_turn.turns : undefined);
     const [bills, setBills] = React.useState(bill);
 
@@ -70,6 +72,22 @@ function Home ({ navigation }) {
 
     return (
         <Provider>
+            {is_paided && is_paided === true 
+            ? <View style={styles.reset}>
+                <IconButton 
+                    icon="autorenew" 
+                    size={35}
+                    color={Colors.red500}
+                    onPress={() => {
+                        dispatch(turnSlice.actions.setListTurn([]));
+                        dispatch(turnSlice.actions.setBill(undefined));
+                        dispatch(turnSlice.actions.setIsPaided(false));
+                        dispatch(menuSlice.actions.setListOrder(undefined));
+                    }}
+                />
+            </View>
+            : <></>
+            }
             {bills
             ? <Card style={styles.card}>
                 <Image source={require('../assets/image/logo.png')} style={styles.image_logo}/>
@@ -93,14 +111,6 @@ function Home ({ navigation }) {
                 </View>
                 <Button style={styles.button} mode="contained" onPress={() => navigation.navigate("Order")}>
                     Xem chi tiết
-                </Button>
-                <Button style={styles.button} mode="contained" onPress={() => {
-                    dispatch(turnSlice.actions.setListTurn([]));
-                    dispatch(turnSlice.actions.setBill(undefined));
-                    dispatch(turnSlice.actions.setIsPaided(false));
-                    dispatch(menuSlice.actions.setListOrder(undefined));
-                }}>
-                    Làm mới 
                 </Button>
             </Card>
             : <View style={styles.container}>
@@ -134,6 +144,10 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         paddingTop: 30,
     },
+    reset: {
+        display: "flex",
+        alignItems: "flex-end",
+    },
     image: {
         width: 350,
         height: 350,
@@ -150,12 +164,11 @@ const styles = StyleSheet.create({
         width: 200,
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop: 10,
+        marginTop: 20,
         marginBottom: 20,
         backgroundColor: "#FF6347",
     },
     card: {
-        marginTop: 30,
         marginLeft: 15,
         marginRight: 15,
         borderRadius: 30
