@@ -4,7 +4,8 @@ import Menu from "./components/menu/menu";
 import {
   Switch,
   Route,
-  useRouteMatch
+  useRouteMatch,
+  Redirect
 } from "react-router-dom";
 
 import Home from './screens/home/home';
@@ -19,7 +20,6 @@ import { fetchAllTable, fetchAllTableDetail } from "./store/thunk/thunk-table";
 import { fetchAllMenu } from "./store/thunk/thunk-menu";
 import { fetchAllAccount } from "./store/thunk/thunk-account";
 import { fetchAllTurn } from "./store/thunk/thunk-history";
-import { Redirect } from "react-router-dom";
 import { io } from "socket.io-client";
 import { socketSlice } from "./store/slices/socket";
 
@@ -30,16 +30,21 @@ function App() {
 
   // load data 
   React.useEffect(() => {
+    if (account_login && account_login.role_id > 2) {
+      // history
+      dispatch(fetchAllTurn(2));
+    } else {
+      dispatch(fetchAllTableDetail());
+      // history
+      dispatch(fetchAllTurn());
+      // new order
+      dispatch(fetchAllTurn(0));
+    }
     if (account_login && account_login.role_id === 1) {
       dispatch(fetchAllTable());
       dispatch(fetchAllMenu());
       dispatch(fetchAllAccount());
-    }
-    dispatch(fetchAllTableDetail());
-    // history
-    dispatch(fetchAllTurn());
-    // new order
-    dispatch(fetchAllTurn(0));
+    } 
     // set socket
     dispatch(socketSlice.actions.setSocket(io("http://localhost:5000")));
     // eslint-disable-next-line

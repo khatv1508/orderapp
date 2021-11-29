@@ -97,13 +97,14 @@ exports.findOne = (req, res) => {
 // Update a Turn by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
+  const status = req.query.status;
 
   // get thong tin Turn 
   Turn.findByPk(id)
   .then(data => {
     //  update total 
     Turn.update(Object.assign({
-        confirm_status: 1
+        confirm_status: status ? status : 1
       }, data), {
         where: {
           id: id

@@ -10,9 +10,9 @@ import { fetchAllTurn } from "../../store/thunk/thunk-history";
 import ShowMore from "../../components/order/show_more";
 
 const History = () => {
-
-    const {list_turn} = useSelector((state) => state.historyForm);
     const dispatch = useDispatch();
+    const {list_turn} = useSelector((state) => state.historyForm);
+    const { account_login } = useSelector((state) => state.accountForm);
 
     const [turns, setTurns] = React.useState(list_turn);
 
@@ -23,8 +23,20 @@ const History = () => {
     }, [list_turn]);
 
     const refreshHistory = () => {
-        dispatch(fetchAllTurn());
+        if (account_login.role_id === 3) {
+            dispatch(fetchAllTurn(2));
+        } else {
+            dispatch(fetchAllTurn());
+        }
     }
+
+    const { socket } = useSelector((state) => state.socket);
+    React.useEffect(() => {
+        socket && socket.on("has-chef", () => {
+            refreshHistory();
+        });
+        // eslint-disable-next-line
+    },[socket]);
 
     return (
         <div>

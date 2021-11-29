@@ -26,6 +26,14 @@ io.on("connection", (socket) => {
     // console.log(arg);
     socket.broadcast.emit("has-pay", arg);
   });
+  socket.on("chef", (arg) => {
+    // console.log(arg);
+    socket.broadcast.emit("has-chef", arg);
+  });
+  socket.on("finish", (arg) => {
+    // console.log(arg);
+    socket.broadcast.emit("has-finish", `Table ${arg[0]} - Turn ${arg[1]}`);
+  });
 });
 httpServer.listen(5000);
 

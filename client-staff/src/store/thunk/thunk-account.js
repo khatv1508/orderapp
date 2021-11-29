@@ -10,6 +10,7 @@ import {
 } from "./thunk-config";
 import { accountFormSlice } from "../slices/account-form";
 import { snackBarSlice } from "../slices/snack-bar";
+import { menuSlice } from "../slices/menu";
 
 //  Get all account
 export const fetchAllAccount = () => async dispatch => {
@@ -182,6 +183,11 @@ export const fetchCheckAccount = (account) => async dispatch => {
         if (result) {
             // // save list account
             dispatch(accountFormSlice.actions.setAccountLogin(result));
+            if (result.role_id === 3) {
+                console.log("test");
+                // set menu active 
+                dispatch(menuSlice.actions.setActiveMenu("history"));
+            }
             // show snack-bar
             dispatch(snackBarSlice.actions.setSnackBar({severity: "success", message: result.message}));
         } else {

@@ -27,6 +27,7 @@ import ShowMore from "../../components/order/show_more";
 import { fetchAllTableDetail } from "../../store/thunk/thunk-table";
 import { fetchAllTurn } from "../../store/thunk/thunk-history";
 import { fetchUpdateBill } from "../../store/thunk/thunk-order";
+import { useRouteMatch, Redirect } from "react-router-dom";
 
 // Table item
 const TableItem = ({table, payTable, setPayTable}) => {
@@ -123,11 +124,13 @@ const TableItem = ({table, payTable, setPayTable}) => {
 
 function Home() {
     const {list_new_order} = useSelector((state) => state.historyForm);
+    const { account_login } = useSelector((state) => state.accountForm);
 
     const orderCount = list_new_order ? list_new_order.length : 0;
 
     const {list_table_detail} = useSelector((state) => state.tableForm);
     const dispatch = useDispatch();
+    let match = useRouteMatch();
 
     const [tableDetails, setTableDetails] = React.useState(list_table_detail);
 
@@ -145,9 +148,12 @@ function Home() {
 
     const [open, setOpen] = React.useState(false);
     const [payTable, setPayTable] = React.useState(undefined);
+    const [turnDetails, setTurnDetails] = React.useState(undefined);
 
     const handleClose = () => {
         setOpen(false);
+        setPayTable(undefined);
+        setTurnDetails(undefined);
     };
 
     //  socket io
@@ -162,13 +168,16 @@ function Home() {
             setOpen(true);
             setPayTable(arg);
         }); 
+        socket && socket.on("has-finish", (arg) => {
+            setOpen(true);
+            setTurnDetails(arg);
+        }); 
         // eslint-disable-next-line
     },[socket]);
 
-    
-
-    return (
-        <div style={{padding: "0 20px"}}>
+    return <>
+        {account_login.role_id > 2 ? <Redirect to={`${match.path}/history`}/> 
+        : <div style={{padding: "0 20px"}}>
             <ShowMore />
             <Grid container spacing={2}>
                 <Grid item lg={9} 
@@ -215,7 +224,9 @@ function Home() {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    Table {payTable} muốn thanh toán !
+                    {payTable 
+                    ? `Table ${payTable} want to pay !` 
+                    : `${turnDetails} finished !`}
                 </DialogTitle>
                 <DialogActions>
                     <Button onClick={handleClose} autoFocus>
@@ -224,7 +235,8 @@ function Home() {
                 </DialogActions>
             </Dialog>
         </div>
-    );
+        }
+    </>
 }
 
 export default Home;

@@ -26,8 +26,13 @@ function Order ({order}) {
     }
 
     const handleConfirmm = () => {
-        dispatch(fetchUpdateTurn(order.id));
+        dispatch(fetchUpdateTurn(order.id, 2));
         dispatch(fetchAllTurn());
+    }
+
+    const handleFinish = () => {
+        dispatch(fetchUpdateTurn(order.id));
+        setTimeout(() => dispatch(fetchAllTurn(2)), 300);
     }
 
     const getTotal = () => {
@@ -105,7 +110,17 @@ function Order ({order}) {
                 <IconButton onClick={handleConfirmm} style={{border: "3px solid #71cca3", color: "#71cca3", marginRight: "10px"}}>
                     <IoMdCheckmark />
                 </IconButton>
-            </Stack> : <div>
+            </Stack> : order.confirm_status === 2 
+            ? <div>
+                <Button variant="outlined" 
+                style={{border: "2px solid", fontSize: "18px"}} 
+                startIcon={<IoMdCheckmark />}
+                onClick={handleFinish}
+                >
+                    Finish
+                </Button>
+            </div> 
+            :<div>
                 <Button variant="outlined" color="secondary" 
                 style={{border: "2px solid", fontSize: "18px"}} 
                 startIcon={<IoMdCheckmark />}

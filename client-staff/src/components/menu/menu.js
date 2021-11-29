@@ -3,6 +3,7 @@ import "./menu.css";
 import logo from "../../assets/image/logo.png"
 import user from "../../assets/image/user.png";
 import staff from "../../assets/image/staff.png";
+import chef from "../../assets/image/chef.png";
 import {
     List,
     ListItemButton,
@@ -25,31 +26,31 @@ const menus = [{
     label: "Home",
     url: "/app",
     icon: <AiFillHome />,
-    role_id: undefined
+    role_id: [1,2]
 },{
     id: "history",
     label: "History",
     url: "/app/history",
     icon: <RiHistoryFill />,
-    role_id: undefined
+    role_id: [1,2,3]
 },{
     id: "account",
     label: "Account",
     url: "/app/account",
     icon: <RiAccountCircleLine />,
-    role_id: 1
+    role_id: [1]
 },{
     id: "menu",
     label: "Menu",
     url: "/app/menu",
     icon: <MdRestaurantMenu />,
-    role_id: 1
+    role_id: [1]
 },{
     id: "table",
     label: "Table",
     url: "/app/table",
     icon: <SiAirtable />,
-    role_id: 1
+    role_id: [1]
 }];
 
 const MenuItem = ({menu}) => {
@@ -84,8 +85,8 @@ const MenuItem = ({menu}) => {
 }
 
 const Menu = () => {
-    const account_login = useSelector((state) => state.accountForm.account_login);
     const dispatch = useDispatch();
+    const { account_login } = useSelector((state) => state.accountForm);
 
     const handleLogout = () => {
         dispatch(accountFormSlice.actions.setAccountLogin(undefined));
@@ -104,18 +105,29 @@ const Menu = () => {
                         <Avatar className="avatar" alt="" src={user} />
                         <p>Hello, Admin</p>
                     </div> 
-                    : <div style={{
+                    : account_login.role_id === 2 
+                    ? <div style={{
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center"}}>
                         <Avatar className="avatar" alt="" src={staff} />
                         <p>Hello, Staff</p>
-                    </div>}
+                    </div> 
+                    : <div style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center"}}>
+                        <Avatar className="avatar" alt="" src={chef} />
+                        <p>Hello, Chef</p>
+                    </div>
+                    }
+                    
                 </div>
                 
                 <List className="list">
                     {menus.map((menu) => {
-                        if (menu.role_id && menu.role_id !== account_login.role_id) {
+                        // if (menu.role_id && menu.role_id !== account_login.role_id) {
+                        if (menu.role_id && !menu.role_id.includes(account_login.role_id)) {  
                             return <div key={menu.url}></div>
                         }
                         return <MenuItem key={menu.url} menu={menu}/>
