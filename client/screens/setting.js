@@ -81,7 +81,8 @@ function Setting () {
                     <Dialog.Content>
                         <TextInput
                             label="Admin Pass"
-                            value={"admin"}
+                            // value={"admin"}
+                            value=""
                             onChangeText={text => setText(text)}
                             secureTextEntry
                             style={styles.text_input}
